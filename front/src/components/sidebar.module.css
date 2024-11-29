@@ -1,0 +1,40 @@
+.sidebar {
+    height: 90vh; /* Full viewport height */
+    position: fixed; /* Fix the sidebar to the left side */
+    width: 250px; /* Adjust the width as needed */
+  }
+  
+  /* .sidebarHeader {
+    padding: 1rem;
+    border-bottom: 1px solid #dee2e6;
+  }
+  
+  .sidebarBrand {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  
+  .sidebarNav {
+    padding: 1rem;
+  }
+  
+  .navTitle {
+    margin-top: 1rem;
+    font-size: 1.25rem;
+    font-weight: bold;
+  }
+  
+  .navItem {
+    padding: 0.5rem 1rem;
+    color: white;
+    text-decoration: none;
+  }
+  
+  .navItem:hover {
+    background-color: #495057;
+    color: white;
+  }
+  
+  .navItemBadge {
+    margin-left: auto;
+  } */

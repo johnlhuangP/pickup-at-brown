@@ -1,0 +1,19 @@
+.navbar {
+    font-size: 1.25rem; /* Increase font size */
+    padding: 1rem; /* Increase padding */
+  }
+  
+  .navbarBrand {
+    font-size: 2rem !important; /* Increase brand font size */
+    padding-left: 1rem;
+  }
+  
+  .nav-link {
+    font-size: 1.25rem; /* Increase link font size */
+    padding: 0.75rem 1.25rem; /* Increase link padding */
+  }
+  
+  .navbar-toggler {
+    font-size: 1.25rem; /* Increase toggler font size */
+    padding: 0.5rem 1rem; /* Increase toggler padding */
+  }
