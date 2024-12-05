@@ -14,4 +14,5 @@ class ChatMessage(Base):
 
     # Relationships
     session = relationship("Session", back_populates="chat")
-    sender = relationship("User", back_populates="messages") 
+    sender = relationship("User", back_populates="messages")
+    activities = relationship("Activity", back_populates="message") 

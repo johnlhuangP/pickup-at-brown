@@ -34,4 +34,5 @@ class Session(Base):
     # Relationships
     creator = relationship("User", back_populates="created_sessions")
     participants = relationship("SessionParticipant", back_populates="session")
-    chat = relationship("ChatMessage", back_populates="session") 
+    chat = relationship("ChatMessage", back_populates="session")
+    activities = relationship("Activity", back_populates="session") 

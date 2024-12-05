@@ -14,4 +14,11 @@ class User(Base):
     # Relationships
     created_sessions = relationship("Session", back_populates="creator")
     session_participants = relationship("SessionParticipant", back_populates="user")
-    messages = relationship("Message", back_populates="sender")
+    messages = relationship("ChatMessage", back_populates="sender")
+    activities = relationship("Activity", back_populates="user")
+    friendships = relationship("Friendship", 
+                             foreign_keys="[Friendship.user_id]",
+                             back_populates="user")
+    friend_requests = relationship("Friendship",
+                                 foreign_keys="[Friendship.friend_id]",
+                                 back_populates="friend")
