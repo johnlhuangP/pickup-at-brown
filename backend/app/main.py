@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import sessions, users
+from app.routers import sessions, users, sports
 from app.models import *
 
 app = FastAPI()
@@ -17,6 +17,7 @@ app.add_middleware(
 # Include routers
 app.include_router(users.router)
 app.include_router(sessions.router)
+app.include_router(sports.router)
 
 @app.get("/")
 async def root():

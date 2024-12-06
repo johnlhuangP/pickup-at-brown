@@ -1,36 +1,29 @@
 from pydantic import BaseModel
 from datetime import datetime
 from typing import Optional, List
-from app.models.session import SportType, DifficultyLevel
 
 class SessionBase(BaseModel):
     title: str
-    sport_type: SportType
-    difficulty_level: DifficultyLevel
-    location: str
-    start_time: datetime
-    end_time: datetime
-    max_participants: int
     description: Optional[str] = None
+    location_id: int
+    datetime: datetime
+    max_participants: int
+    sport_id: int
 
 class SessionCreate(SessionBase):
-    creator_id: int
+    pass
 
-class SessionUpdate(BaseModel):
+class SessionUpdate(SessionBase):
     title: Optional[str] = None
-    sport_type: Optional[SportType] = None
-    difficulty_level: Optional[DifficultyLevel] = None
-    location: Optional[str] = None
-    start_time: Optional[datetime] = None
-    end_time: Optional[datetime] = None
-    max_participants: Optional[int] = None
     description: Optional[str] = None
+    location_id: Optional[int] = None
+    datetime: Optional[datetime] = None
+    max_participants: Optional[int] = None
+    sport_id: Optional[int] = None
 
 class SessionResponse(SessionBase):
     id: int
     creator_id: int
-    created_at: datetime
-    current_participants: int = 0
 
     class Config:
         from_attributes = True 
