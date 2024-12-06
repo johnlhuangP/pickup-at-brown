@@ -1,69 +1,67 @@
-import os
-import sys
 from logging.config import fileConfig
-from sqlalchemy import engine_from_config
+from sqlalchemy import engine_from_config, create_engine
 from sqlalchemy import pool
 from alembic import context
+import os
 from dotenv import load_dotenv
 
-# Debug prints
-print("Python path:", sys.path)
-print("Current directory:", os.getcwd())
-print("Base directory:", os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-# This is the critical part - make sure we're looking in the right place for packages
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.insert(0, BASE_DIR)
-
-# Load environment variables first
+# Load environment variables
 load_dotenv()
 
-# Import all models here
+# Import your models
 from app.models.user import User
-from app.models.post import Post
-from app.database import Base, SQLALCHEMY_DATABASE_URL
+from app.models.session import Session
+from app.models.session_participant import SessionParticipant
+from app.models.chat_message import ChatMessage
+from app.models.activity import Activity
+from app.models.friendship import Friendship
+from app.database import Base
 
+# this is the Alembic Config object
 config = context.config
 
-# This line sets up loggers basically
-if config.config_file_name is not None:
-    fileConfig(config.config_file_name)
+# Get database URL directly without modifying it
+DATABASE_URL = os.getenv('DATABASE_URL')
 
-# Override sqlalchemy.url path
-config.set_main_option('sqlalchemy.url', SQLALCHEMY_DATABASE_URL)
-
-# Add your model's MetaData object here for 'autogenerate' support
 target_metadata = Base.metadata
 
+def include_object(object, name, type_, reflected, compare_to):
+    """Determine which database objects should be included in the autogeneration."""
+    # Exclude auth schema and other Supabase internal schemas
+    if hasattr(object, 'schema') and object.schema in ['auth', 'storage', 'graphql', 'graphql_public', 'realtime', 'supabase_functions']:
+        return False
+    return True
+
 def run_migrations_offline() -> None:
-    """Run migrations in 'offline' mode."""
-    url = config.get_main_option("sqlalchemy.url")
     context.configure(
-        url=url,
+        url=DATABASE_URL,
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
+        include_schemas=False,  # Only work with public schema
+        include_object=include_object
     )
 
     with context.begin_transaction():
         context.run_migrations()
 
 def run_migrations_online() -> None:
-    """Run migrations in 'online' mode."""
-    configuration = config.get_section(config.config_ini_section)
-    url = SQLALCHEMY_DATABASE_URL
-    configuration["sqlalchemy.url"] = url
-
-    connectable = engine_from_config(
-        configuration,
-        prefix="sqlalchemy.",
+    # Create engine directly with the URL
+    connectable = create_engine(
+        DATABASE_URL,
         poolclass=pool.NullPool,
+        connect_args={
+            "sslmode": "require",
+            "gssencmode": "disable"
+        }
     )
 
     with connectable.connect() as connection:
         context.configure(
             connection=connection,
-            target_metadata=target_metadata
+            target_metadata=target_metadata,
+            include_schemas=False,  # Only work with public schema
+            include_object=include_object
         )
 
         with context.begin_transaction():

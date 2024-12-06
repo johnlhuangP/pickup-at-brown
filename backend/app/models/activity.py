@@ -26,8 +26,8 @@ class Activity(Base):
     session_id = Column(Integer, ForeignKey("sessions.id"), nullable=True)
     message_id = Column(Integer, ForeignKey("chat_messages.id"), nullable=True)
     
-    # Additional metadata stored as JSON
-    metadata = Column(String, nullable=True)  # For storing additional context as JSON
+    # Changed 'metadata' to 'activity_metadata' to avoid conflict
+    activity_metadata = Column(String, nullable=True)  # For storing additional context as JSON
 
     # Relationships
     user = relationship("User", back_populates="activities")

@@ -18,6 +18,6 @@ class SessionParticipant(Base):
     status = Column(Enum(ParticipantStatus), default=ParticipantStatus.PENDING)
     joined_at = Column(DateTime, default=datetime.utcnow)
 
-    # Relationships
+    # Relationships using strings to avoid circular imports
     session = relationship("Session", back_populates="participants")
     user = relationship("User", back_populates="session_participants") 

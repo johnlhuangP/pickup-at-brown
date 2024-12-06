@@ -1,11 +1,22 @@
 from fastapi import FastAPI
-from app.routers import posts # Import the posts router
+from fastapi.middleware.cors import CORSMiddleware
+from app.routers import sessions
+from app.models import *  # This will import all models
 
 app = FastAPI()
 
-# Include the posts router
-app.include_router(posts.router)
+# Configure CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Include routers
+app.include_router(sessions.router)
 
 @app.get("/")
 async def root():
-    return {"message": "Hello World"}
+    return {"message": "Welcome to Pickup at Brown API"}
