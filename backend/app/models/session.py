@@ -14,7 +14,10 @@ class SportType(str, enum.Enum):
     SOCCER = "soccer"
     VOLLEYBALL = "volleyball"
     TENNIS = "tennis"
-    # Add more sports as needed
+    FOOTBALL = "football"
+    FUTSAL = "futsal"
+    PICKLEBALL = "pickleball"
+    
 
 class Session(Base):
     __tablename__ = "sessions"

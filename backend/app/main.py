@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import sessions
-from app.models import *  # This will import all models
+from app.routers import sessions, users
+from app.models import *
 
 app = FastAPI()
 
@@ -15,6 +15,7 @@ app.add_middleware(
 )
 
 # Include routers
+app.include_router(users.router)
 app.include_router(sessions.router)
 
 @app.get("/")
