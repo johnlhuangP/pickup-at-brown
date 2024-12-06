@@ -8,11 +8,10 @@ class ChatMessage(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     content = Column(String)
-    session_id = Column(Integer, ForeignKey("sessions.id"))
+    timestamp = Column(DateTime, default=datetime.utcnow)
     sender_id = Column(Integer, ForeignKey("users.id"))
-    created_at = Column(DateTime, default=datetime.utcnow)
+    session_id = Column(Integer, ForeignKey("sessions.id"))
 
-    # Relationships
-    session = relationship("Session", back_populates="chat")
     sender = relationship("User", back_populates="messages")
+    session = relationship("Session", back_populates="messages")
     activities = relationship("Activity", back_populates="message") 

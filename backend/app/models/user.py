@@ -9,7 +9,6 @@ class User(Base):
     email = Column(String, unique=True, index=True)
     username = Column(String, unique=True, index=True)
     hashed_password = Column(String)
-    skill_level = Column(String)
     bio = Column(String, nullable=True)
     
     # Use string references for relationships
@@ -27,3 +26,9 @@ class User(Base):
         foreign_keys="Friendship.friend_id",
         back_populates="friend"
     )
+    sport_preferences = relationship("SportPreference", back_populates="user")
+
+    # Helper property to easily access sports
+    @property
+    def preferred_sports(self):
+        return [pref.sport for pref in self.sport_preferences]
