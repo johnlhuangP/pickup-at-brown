@@ -11,6 +11,7 @@ const Feed = ({ selectedSport }: FeedProps) => {
       <div className={styles.feedContent}> {/* Apply feed-content class */}
         {/* Add more content here related to the selected sport */}
         <p>This is where the feed content will go.</p>
+        
       </div>
     </div>
   );
