@@ -1,5 +1,10 @@
+/* Import Outfit font */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap');
+
+
 .navbar {
     font-size: 1.25rem; /* Increase font size */
+    font-family: 'Outfit';
     padding: 1rem; /* Increase padding */
   }
   
