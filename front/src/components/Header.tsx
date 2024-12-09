@@ -16,11 +16,12 @@ const Header = () => {
                         <Nav.Link href="#link">Link</Nav.Link> */}
                     </Nav>
                     <Nav className="justify-content-end" defaultActiveKey="#home" variant="underline">
+                        
                         <Nav.Item>
-                            <Nav.Link href="#home" className={styles.navLink}>Home</Nav.Link>
+                            <Nav.Link href="/about" className={styles.navLink}>About</Nav.Link>
                         </Nav.Item>
                         <Nav.Item>
-                            <Nav.Link href="#about" className={styles.navLink}>About</Nav.Link>
+                            <Nav.Link href="/profile" className={styles.navLink}>Profile</Nav.Link>
                         </Nav.Item>
                         
                         <SignedOut>
