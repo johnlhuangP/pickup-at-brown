@@ -1,40 +1,48 @@
 .sidebar {
-    height: 90vh; /* Full viewport height */
-    position: fixed; /* Fix the sidebar to the left side */
-    width: 250px; /* Adjust the width as needed */
-  }
+  height: 90vh; /* Full viewport height */
+  position: fixed; /* Fix the sidebar to the left side */
+  width: 230px; /* Adjust the width as needed */
+}
+
+.selectedSport {
   
-  /* .sidebarHeader {
-    padding: 1rem;
-    border-bottom: 1px solid #dee2e6;
-  }
-  
-  .sidebarBrand {
-    font-size: 1.5rem;
-    font-weight: bold;
-  }
-  
-  .sidebarNav {
-    padding: 1rem;
-  }
-  
-  .navTitle {
-    margin-top: 1rem;
-    font-size: 1.25rem;
-    font-weight: bold;
-  }
-  
-  .navItem {
-    padding: 0.5rem 1rem;
-    color: white;
-    text-decoration: none;
-  }
-  
-  .navItem:hover {
-    background-color: #495057;
-    color: white;
-  }
-  
-  .navItemBadge {
-    margin-left: auto;
-  } */
+  background-color: #8fe3ff; /* Light Blue color */
+  color: rgb(0, 0, 0) !important; /* Ensure text is readable on light blue */
+  border-radius: 8px; /* Add rounded corners */
+
+}
+
+.sidebarHeader {
+  padding: 1rem;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.sidebarBrand {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.sidebarNav {
+  padding: 1rem;
+}
+
+.navTitle {
+  margin-top: 1rem;
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.navItem {
+  padding: 0.5rem 1rem;
+  color: white;
+  text-decoration: none;
+}
+
+/* When hovering over .navItem, change background and text color */
+.navItem:hover {
+  background-color: #6eb6ff !important; /* Light blue on hover */
+  color: white !important; /* White text on hover */
+}
+.navItemBadge {
+  margin-left: auto;
+}
