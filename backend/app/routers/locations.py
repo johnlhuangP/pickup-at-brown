@@ -5,13 +5,11 @@ from app.crud import location as location_crud
 from app.schemas.location import LocationCreate, LocationResponse, LocationUpdate
 from typing import List
 # imports for availability handling 
-from app.database import get_db
-from app.crud import location as location_crud
-from app.schemas.location import LocationCreate, LocationResponse, LocationUpdate
-from app.schemas.time_block import TimeBlockCreate, TimeBlockResponse
+from app.schemas.location_timeblock import TimeBlockCreate, TimeBlockResponse, TimeBlockUpdate
 #imports for web scraper
 from app.scrapers.omac_scraper import get_omac_reservations
 from app.util.LocationEvent import LocationEvent
+import datetime
 
 router = APIRouter(
     prefix="/locations",  # Changed prefix to plural
@@ -81,28 +79,28 @@ def create_time_block(
         time_block=time_block
     )
 
-@router.get("/{location_id}/availability", response_model=List[TimeBlockResponse])
-def get_location_availability(
-    location_id: int, 
-    start_time: datetime = None, 
-    end_time: datetime = None,
-    db: Session = Depends(get_db)
-):
-    """
-    Retrieve availability for a specific location
-    - Optional filtering by start/end times
-    """
-    # Validate location exists
-    db_location = location_crud.get_location(db, location_id)
-    if not db_location:
-        raise HTTPException(status_code=404, detail="Location not found")
+# @router.get("/{location_id}/availability", response_model=List[TimeBlockResponse])
+# def get_location_availability(
+#     location_id: int, 
+#     start_time: datetime = None, 
+#     end_time: datetime = None,
+#     db: Session = Depends(get_db)
+# ):
+#     """
+#     Retrieve availability for a specific location
+#     - Optional filtering by start/end times
+#     """
+#     # Validate location exists
+#     db_location = location_crud.get_location(db, location_id)
+#     if not db_location:
+#         raise HTTPException(status_code=404, detail="Location not found")
     
-    return location_crud.get_time_blocks(
-        db, 
-        location_id=location_id, 
-        start_time=start_time, 
-        end_time=end_time
-    )
+#     return location_crud.get_time_blocks(
+#         db, 
+#         location_id=location_id, 
+#         start_time=start_time, 
+#         end_time=end_time
+#     )
 
 @router.delete("/{location_id}/blocks/{block_id}")
 def delete_time_block(

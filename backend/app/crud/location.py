@@ -1,8 +1,12 @@
 from sqlalchemy.orm import Session
 from app.models.location import Location as LocationModel
-from app.schemas.location import LocationCreate, LocationUpdate
-from app.models.time_block import TimeBlock as TimeBlockModel
+from app.schemas.location_timeblock import TimeBlockCreate, TimeBlockUpdate, TimeBlockResponse
+from app.schemas.location import LocationCreate, LocationUpdate, LocationResponse
+from app.models.location_blocked_time import BlockedTime as TimeBlockModel
 from app.util.LocationEvent import LocationEvent
+import datetime
+from typing import List, Dict
+
 
 def get_location(db: Session, location_id: int):  # Changed from session_id
     return db.query(LocationModel).filter(LocationModel.id == location_id).first()
@@ -12,7 +16,7 @@ def get_locations(db: Session, skip: int = 0, limit: int = 100):
     return query.offset(skip).limit(limit).all()
 
 def create_location(db: Session, location: LocationCreate):
-    db_location = LocationModel(**location.dict())
+    db_location = LocationModel(name = location.name)
     db.add(db_location)
     db.commit()
     db.refresh(db_location)
@@ -31,9 +35,14 @@ def update_location(db: Session, location_id: int, location: LocationUpdate):
     return db_location
 
 def delete_location(db: Session, location_id: int):
-    db_location = get_location(db, location_id)  # Changed from get_session
+    db_location = get_location(db, location_id)
     if not db_location:
         return False
+    
+    # Query and delete all time blocks associated with the location
+    time_blocks_for_location = db.query(TimeBlockModel).filter(TimeBlockModel.location_id == location_id).all()
+    for time_block in time_blocks_for_location:
+        db.delete(time_block)
     
     db.delete(db_location)
     db.commit()
@@ -103,7 +112,7 @@ def delete_time_block(
     return True
 
 # for web scraping
-def import_scraped_events(db: Session, scraped_events: List[Event], location_mapping: Dict[str, int]):
+def import_scraped_events(db: Session, scraped_events: List[LocationEvent], location_mapping: Dict[str, int]):
     """
     Import scraped events into the TimeBlock table
     

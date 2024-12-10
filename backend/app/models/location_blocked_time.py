@@ -13,12 +13,13 @@ class BlockedTime(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     location_id = Column(Integer, ForeignKey('locations.id'))
-    start_time = Column(DateTime, nullable=False)
-    end_time = Column(DateTime, nullable=False)
+    #session_id = Column(Integer, ForeignKey('sessions.id'), nullable=True)
+    start_time = Column(DateTime, nullable=True)
+    end_time = Column(DateTime, nullable=True)
     
     # Indicates the source of the block (e.g., web scraper, manual booking)
     source = Column(String, nullable=True)
     
     # Relationship back to the location
     location = relationship("Location", back_populates="blocked_times")
-    session = relationship("Session", back_populates="blocked_times")
+    #session = relationship("Session", back_populates="blocked_times")

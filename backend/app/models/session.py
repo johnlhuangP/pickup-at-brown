@@ -19,6 +19,6 @@ class Session(Base):
     messages = relationship("ChatMessage", back_populates="session")
     sport = relationship("Sport", back_populates="sessions")
     location = relationship("Location", back_populates="sessions")
-    occupancy_records = relationship("LocationOccupancy", back_populates="session")
+    #occupancy_records = relationship("LocationOccupancy", back_populates="session")
     activities = relationship("Activity", back_populates="session") 
-    blocked_times = relationship("BlockedTime", back_populates="session")
+    #blocked_times = relationship("BlockedTime", back_populates="session")
