@@ -88,3 +88,15 @@ def delete_user(db: Session, user_id: int):
     db.delete(db_user)
     db.commit()
     return True 
+
+def get_user_profile(db: Session, user_id: int):
+    """
+    Get complete user profile with all related data
+    """
+    return db.query(User)\
+        .options(
+            joinedload(User.sport_preferences)
+            .joinedload(SportPreference.sport)
+        )\
+        .filter(User.id == user_id)\
+        .first() 
