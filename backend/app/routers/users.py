@@ -16,6 +16,9 @@ example_user = {
     "email": "john.doe@brown.edu",
     "username": "johndoe",
     "password": "securepassword123",
+    "first_name": "John",
+    "last_name": "Doe",
+    "bio": "I love playing sports at Brown!",
     "sport_preferences": [
         {
             "sport_name": "Basketball",

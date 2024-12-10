@@ -33,16 +33,19 @@ def create_user(db: Session, user: UserCreate):
     if db.query(User).filter(User.email == user.email).first():
         raise ValueError("Email already exists")
 
-    # Create the user first
+    # Create the user
     db_user = User(
         email=user.email,
         username=user.username,
-        hashed_password=user.password,  # Note: Make sure this is properly hashed before storing
+        first_name=user.first_name,
+        last_name=user.last_name,
+        bio=user.bio if hasattr(user, 'bio') else None,
+        clerk_id=user.clerk_id
     )
     db.add(db_user)
-    db.flush()  # This assigns an ID to db_user without committing
+    db.flush()
 
-    # Check for duplicate sport preferences
+    # Handle sport preferences
     seen_sports = set()
     for pref in user.sport_preferences:
         if pref.sport_name in seen_sports:

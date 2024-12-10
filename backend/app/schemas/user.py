@@ -60,9 +60,11 @@ class SportPreferenceResponse(BaseModel):
         )
 
 class UserCreate(UserBase):
-    password: str = Field(
-        example="securepassword123",
-        description="User's password"
+    clerk_id: Optional[str] = None
+    bio: Optional[str] = Field(
+        default=None,
+        example="I love sports!",
+        description="User's bio"
     )
     sport_preferences: List[SportPreferenceCreate] = Field(
         default=[],
