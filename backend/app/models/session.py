@@ -21,3 +21,4 @@ class Session(Base):
     location = relationship("Location", back_populates="sessions")
     occupancy_records = relationship("LocationOccupancy", back_populates="session")
     activities = relationship("Activity", back_populates="session") 
+    blocked_times = relationship("BlockedTime", back_populates="session")
