@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Header from './components/Header';
+import ProfilePage from './pages/ProfilePage'
 // import Sidebar from './components/Sidebar';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -22,7 +23,7 @@ function App() {
             {/* Define routes for the different pages */}
             <Route path="/" element={<HomePage />} />
             {/* <Route path="/about" element={<AboutPage />} /> */}
-            {/* <Route path="/profile" element={<ProfilePage />} /> */}
+            <Route path="/profile" element={<ProfilePage />} />
           </Routes>
         </div>
       </div>
