@@ -7,11 +7,8 @@ from app.util.LocationEvent import LocationEvent
 def get_location(db: Session, location_id: int):  # Changed from session_id
     return db.query(LocationModel).filter(LocationModel.id == location_id).first()
 
-def get_locations(db: Session, skip: int = 0, limit: int = 100, sport_type: str = None):
+def get_locations(db: Session, skip: int = 0, limit: int = 100):
     query = db.query(LocationModel)  # Changed from SessionModel
-    if sport_type:
-        # You'll need to adjust this filter based on how sport is related to location
-        query = query.filter(LocationModel.sport_id == sport_type)  # Potential modification needed
     return query.offset(skip).limit(limit).all()
 
 def create_location(db: Session, location: LocationCreate):

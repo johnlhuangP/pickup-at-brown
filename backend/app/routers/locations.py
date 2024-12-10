@@ -27,14 +27,12 @@ def create_location(location: LocationCreate, db: Session = Depends(get_db)):
 def list_locations(
     skip: int = 0, 
     limit: int = 100, 
-    sport_type: str = None,
     db: Session = Depends(get_db)
 ):
     locations = location_crud.get_locations(
         db, 
         skip=skip, 
         limit=limit, 
-        sport_type=sport_type
     )
     return locations
 

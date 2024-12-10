@@ -4,14 +4,12 @@ from typing import Optional, List
 
 class LocationBase(BaseModel):
     name: str
-    sport_ids: List[int]
 
 class LocationCreate(LocationBase):
     pass
 
 class LocationUpdate(LocationBase):
     name: Optional[str] = None
-    sport_ids: Optional[List[int]] = None
 
 class LocationResponse(LocationBase):
     id: int
