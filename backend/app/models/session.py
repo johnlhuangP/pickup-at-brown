@@ -11,7 +11,7 @@ class Session(Base):
     location_id = Column(Integer, ForeignKey("locations.id"), nullable=False)
     datetime = Column(DateTime)
     max_participants = Column(Integer)
-    creator_id = Column(Integer, ForeignKey("users.id"))
+    creator_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     sport_id = Column(Integer, ForeignKey("sports.id"), nullable=False)
 
     creator = relationship("User", back_populates="created_sessions")
