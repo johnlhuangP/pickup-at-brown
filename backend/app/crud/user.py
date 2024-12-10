@@ -1,4 +1,4 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from app.models.user import User
 from app.models.sport_preference import SportPreference
 from app.schemas.user import UserCreate, UserUpdate, UserResponse
@@ -6,13 +6,23 @@ from app.crud.sport import get_sport_from_name
 from datetime import datetime
 
 def get_user(db: Session, user_id: int):
-    return db.query(User).filter(User.id == user_id).first()
+    return db.query(User)\
+        .options(joinedload(User.sport_preferences).joinedload(SportPreference.sport))\
+        .filter(User.id == user_id)\
+        .first()
 
 def get_user_by_email(db: Session, email: str):
-    return db.query(User).filter(User.email == email).first()
+    return db.query(User)\
+        .options(joinedload(User.sport_preferences).joinedload(SportPreference.sport))\
+        .filter(User.email == email)\
+        .first()
 
 def get_users(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(User).offset(skip).limit(limit).all()
+    return db.query(User)\
+        .options(joinedload(User.sport_preferences).joinedload(SportPreference.sport))\
+        .offset(skip)\
+        .limit(limit)\
+        .all()
 
 def create_user(db: Session, user: UserCreate):
     # Check if username exists

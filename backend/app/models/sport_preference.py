@@ -14,4 +14,8 @@ class SportPreference(Base):
 
     # Relationships
     user = relationship("User", back_populates="sport_preferences")
-    sport = relationship("Sport", back_populates="user_preferences") 
+    sport = relationship("Sport", back_populates="user_preferences")
+
+    @property
+    def sport_name(self):
+        return self.sport.name if self.sport else None
