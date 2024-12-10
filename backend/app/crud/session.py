@@ -20,7 +20,7 @@ def get_sessions(db: SQLAlchemySession, skip: int = 0, limit: int = 100, sport_t
             joinedload(Session.creator),
             joinedload(Session.sport),
             joinedload(Session.location)
-        ).order_by(Session.datetime.desc())
+        ).order_by(Session.datetime.asc())
     if sport_type:
         query = query.join(Session.sport).filter(Sport.name == sport_type)
     return query.offset(skip).limit(limit).all()
