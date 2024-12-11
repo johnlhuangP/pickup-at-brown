@@ -7,7 +7,8 @@ from app.models.chat_message import ChatMessage
 from app.models.activity import Activity
 from app.models.friendship import Friendship
 from app.models.location import Location
-from app.models.location_occupancy import LocationOccupancy
+from app.models.location_blocked_time import BlockedTime
+#from app.models.location_occupancy import LocationOccupancy
 
 # This ensures all models are registered with SQLAlchemy
 __all__ = [
@@ -20,6 +21,6 @@ __all__ = [
     "Activity",
     "Friendship",
     "Location",
-    "LocationOccupancy"
+    "BlockedTime"
 ]
  
