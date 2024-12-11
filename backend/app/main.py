@@ -14,7 +14,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Include routers
+# Public routes (if any) would go here
+@app.get("/health")
+async def health_check():
+    return {"status": "healthy"}
+
+# Protected routes
 app.include_router(locations.router)
 app.include_router(users.router)
 app.include_router(sessions.router)

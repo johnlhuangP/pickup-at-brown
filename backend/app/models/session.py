@@ -11,7 +11,7 @@ class Session(Base):
     location_id = Column(Integer, ForeignKey("locations.id"), nullable=False)
     datetime = Column(DateTime)
     max_participants = Column(Integer)
-    creator_id = Column(Integer, ForeignKey("users.id"))
+    creator_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     sport_id = Column(Integer, ForeignKey("sports.id"), nullable=False)
 
     creator = relationship("User", back_populates="created_sessions")
@@ -19,6 +19,8 @@ class Session(Base):
     messages = relationship("ChatMessage", back_populates="session")
     sport = relationship("Sport", back_populates="sessions")
     location = relationship("Location", back_populates="sessions")
-    #occupancy_records = relationship("LocationOccupancy", back_populates="session")
-    activities = relationship("Activity", back_populates="session") 
-    #blocked_times = relationship("BlockedTime", back_populates="session")
+    activities = relationship("Activity", back_populates="session")
+
+    @property
+    def current_participants(self):
+        return len(self.participants)

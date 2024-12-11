@@ -1,40 +1,35 @@
 import { useState } from 'react';
-import Sidebar from "../components/Sidebar";  // Import the Sidebar component
-import Feed from "../components/Feed";       // Import the Feed component
+import Sidebar from "../components/Sidebar"; // Import Sidebar component
+import Feed from "../components/Feed";     // Import Feed component
 
-// HomePage component - serves as the main layout of the page
 const HomePage = () => {
-  // State to track the selected sport
-  const [selectedSport, setSelectedSport] = useState<string>(''); 
+  const [selectedSport, setSelectedSport] = useState<string>(''); // State for selected sport
 
-  // Handler function to update the selected sport
-  // This function will be passed to the Sidebar to update the state when a sport is selected
+  // Handler to update the selected sport
   const handleSportSelect = (sport: string) => {
-    setSelectedSport(sport); // Set the selected sport
+    setSelectedSport(sport); // Set the selected sport state
   };
 
   return (
     <div className="home-page" style={{ display: 'flex', minHeight: '100vh' }}>
-      {/* Sidebar component: This takes two props - the handler function to update the selected sport,
-          and the current selected sport to highlight the selected item */}
+      {/* Sidebar component receives the selected sport and handler */}
       <Sidebar onSportSelect={handleSportSelect} selectedSport={selectedSport} />
       
-      {/* Content section: This is where the Feed component will be displayed next to the Sidebar */}
+      {/* Content section */}
       <div 
         className="content" 
         style={{ 
-          flexGrow: 1,        // The content section will take up remaining space
-          marginLeft: '230px',  // This ensures the content doesn't overlap with the sidebar (taking the sidebar width into account)
-          padding: '10px',    // Add some padding around the content
-          display: 'flex',     // Set display to flex to arrange items horizontally
-          flexDirection: 'column',  // Items (like the selected sport and Feed) will be stacked vertically
-          justifyContent: 'flex-start',  // Align items to the top
-          alignItems: 'left',  // Center content horizontally
-          textAlign: 'center'   // Center text inside the content section
+          flexGrow: 1, 
+          marginLeft: '230px', // Adjust based on sidebar width
+          padding: '10px',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'flex-start',
+          alignItems: 'left', 
+          textAlign: 'center'
         }}
       >
-        {/* Feed component: Displays the feed based on the selected sport */}
-        {/* We pass the selectedSport state as a prop to the Feed component */}
+        {/* Feed component receives the selected sport */}
         <Feed selectedSport={selectedSport} />
       </div>
     </div>

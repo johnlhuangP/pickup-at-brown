@@ -1,10 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException, Body
+from fastapi import APIRouter, Depends, HTTPException, Body, Request
 from sqlalchemy.orm import Session
 from typing import List
 from app.database import get_db
 from app.crud import user as crud_user
 from app.schemas.user import UserCreate, UserResponse, UserUpdate
 from fastapi.openapi.docs import get_swagger_ui_html
+from app.auth.clerk import verify_auth_token
 
 router = APIRouter(
     prefix="/users",
@@ -15,6 +16,9 @@ example_user = {
     "email": "john.doe@brown.edu",
     "username": "johndoe",
     "password": "securepassword123",
+    "first_name": "John",
+    "last_name": "Doe",
+    "bio": "I love playing sports at Brown!",
     "sport_preferences": [
         {
             "sport_name": "Basketball",
@@ -62,4 +66,40 @@ def delete_user(user_id: int, db: Session = Depends(get_db)):
     success = crud_user.delete_user(db, user_id=user_id)
     if not success:
         raise HTTPException(status_code=404, detail="User not found")
-    return {"message": "User deleted successfully"} 
+    return {"message": "User deleted successfully"}
+
+@router.post("/sync", response_model=UserResponse)
+async def sync_clerk_user(
+    request: Request,
+    db: Session = Depends(get_db)
+):
+    # Get user data from Clerk token
+    clerk_data = await verify_auth_token(request)
+    
+    # Check if user exists
+    db_user = crud_user.get_user_by_clerk_id(db, clerk_data["sub"])
+    
+    if not db_user:
+        # Create new user if they don't exist
+        user_create = UserCreate(
+            clerk_id=clerk_data["sub"],
+            email=clerk_data["email"],
+            username=clerk_data["username"],
+        )
+        db_user = crud_user.create_user(db, user_create)
+    
+    return db_user 
+
+@router.get("/{user_id}/profile", response_model=UserResponse)
+def get_user_profile(user_id: int, db: Session = Depends(get_db)):
+    """
+    Get detailed user profile including:
+    - Basic user info
+    - Sport preferences
+    - Full name
+    - Bio
+    """
+    db_user = crud_user.get_user_profile(db, user_id=user_id)
+    if db_user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    return db_user 

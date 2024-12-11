@@ -2,6 +2,28 @@ from pydantic import BaseModel
 from datetime import datetime
 from typing import Optional, List
 
+class UserBasic(BaseModel):
+    id: int
+    username: str
+    email: str
+
+    class Config:
+        from_attributes = True
+
+class SportBasic(BaseModel):
+    id: int
+    name: str
+
+    class Config:
+        from_attributes = True
+
+class LocationBasic(BaseModel):
+    id: int
+    name: str
+
+    class Config:
+        from_attributes = True
+
 class SessionBase(BaseModel):
     title: str
     description: Optional[str] = None
@@ -23,7 +45,10 @@ class SessionUpdate(SessionBase):
 
 class SessionResponse(SessionBase):
     id: int
-    creator_id: int
+    creator: Optional[UserBasic] = None
+    sport: Optional[SportBasic] = None
+    location: Optional[LocationBasic] = None
+    current_participants: int = 0
 
     class Config:
         from_attributes = True 
