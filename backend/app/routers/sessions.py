@@ -4,15 +4,20 @@ from app.database import get_db
 from app.crud import session as session_crud
 from app.schemas.session import SessionCreate, SessionResponse, SessionUpdate
 from typing import List
+from app.core.auth_router import AuthRouter
 
-router = APIRouter(
+router = AuthRouter(
     prefix="/sessions",
     tags=["sessions"]
 )
 
 @router.post("/", response_model=SessionResponse)
-def create_session(session: SessionCreate, db: Session = Depends(get_db)):
-    return session_crud.create_session(db=db, session=session)
+def create_session(
+    session: SessionCreate, 
+    creator_id: int,
+    db: Session = Depends(get_db)
+):
+    return session_crud.create_session(db=db, session=session, creator_id=creator_id)
 
 @router.get("/", response_model=List[SessionResponse])
 def list_sessions(

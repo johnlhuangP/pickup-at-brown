@@ -17,6 +17,16 @@ class UserBase(BaseModel):
         example="johndoe",
         description="Username for the account"
     )
+    first_name: Optional[str] = Field(
+        default="",
+        example="John",
+        description="User's first name"
+    )
+    last_name: Optional[str] = Field(
+        default="",
+        example="Doe",
+        description="User's last name"
+    )
 
 class SportPreferenceCreate(BaseModel):
     sport_name: str = Field(
@@ -50,9 +60,11 @@ class SportPreferenceResponse(BaseModel):
         )
 
 class UserCreate(UserBase):
-    password: str = Field(
-        example="securepassword123",
-        description="User's password"
+    clerk_id: Optional[str] = None
+    bio: Optional[str] = Field(
+        default=None,
+        example="I love sports!",
+        description="User's bio"
     )
     sport_preferences: List[SportPreferenceCreate] = Field(
         default=[],
@@ -61,11 +73,6 @@ class UserCreate(UserBase):
                 "sport_name": "Basketball",
                 "skill_level": "intermediate",
                 "notification_enabled": True
-            },
-            {
-                "sport_name": "Tennis",
-                "skill_level": "beginner",
-                "notification_enabled": False
             }
         ],
         description="List of user's sport preferences"
@@ -74,12 +81,25 @@ class UserCreate(UserBase):
 class UserUpdate(BaseModel):
     email: Optional[EmailStr] = None
     username: Optional[str] = None
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
     bio: Optional[str] = None
+
+class UserBasic(BaseModel):
+    id: int
+    username: str
+    email: str
+    first_name: str
+    last_name: str
+    
+    class Config:
+        from_attributes = True
 
 class UserResponse(UserBase):
     id: int
     bio: Optional[str] = None
     sport_preferences: List[SportPreferenceResponse] = []
+    full_name: str = ""
 
     class Config:
         from_attributes = True
@@ -90,7 +110,10 @@ class UserResponse(UserBase):
             id=db_user.id,
             email=db_user.email,
             username=db_user.username,
+            first_name=db_user.first_name or "",
+            last_name=db_user.last_name or "",
             bio=db_user.bio,
+            full_name=db_user.full_name if db_user.first_name and db_user.last_name else "",
             sport_preferences=[SportPreferenceResponse.from_orm(pref) for pref in db_user.sport_preferences]
         )
 

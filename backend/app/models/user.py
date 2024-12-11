@@ -6,9 +6,11 @@ class User(Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)
+    clerk_id = Column(String, unique=True, index=True, nullable=True)
     email = Column(String, unique=True, index=True)
     username = Column(String, unique=True, index=True)
-    hashed_password = Column(String)
+    first_name = Column(String, nullable=True)
+    last_name = Column(String, nullable=True)
     bio = Column(String, nullable=True)
     
     # Use string references for relationships
@@ -28,7 +30,12 @@ class User(Base):
     )
     sport_preferences = relationship("SportPreference", back_populates="user")
 
-    # Helper property to easily access sports
+    @property
+    def full_name(self):
+        if self.first_name and self.last_name:
+            return f"{self.first_name} {self.last_name}"
+        return ""
+
     @property
     def preferred_sports(self):
         return [pref.sport for pref in self.sport_preferences]
