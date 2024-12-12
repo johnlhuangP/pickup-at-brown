@@ -1,0 +1,8 @@
+.cs32/
+__pycache__/
+venv/
+env/
+.env/
+.venv/
+
+.env
