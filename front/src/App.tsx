@@ -8,7 +8,7 @@ import "@coreui/coreui/dist/css/coreui.min.css";
 
 // Import the pages
 import HomePage from "./pages/HomePage";
-
+import SignInPage from "./pages/SignInPage";
 import SignUpPage from "./pages/SignUpPage";
 import Register from "./pages/Register";
 
@@ -29,7 +29,7 @@ function App() {
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/sign-up" element={<SignUpPage />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/login" element={<SignIn />} />
+            <Route path="/sign-in" element={<SignInPage />} />
           </Routes>
         </div>
       </div>

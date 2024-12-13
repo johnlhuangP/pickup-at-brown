@@ -10,7 +10,11 @@ def get_user(db: Session, user_id: int):
         .options(joinedload(User.sport_preferences).joinedload(SportPreference.sport))\
         .filter(User.id == user_id)\
         .first()
-
+def get_user_by_clerk_id(db: Session, clerk_id: str):
+    return db.query(User)\
+        .options(joinedload(User.sport_preferences).joinedload(SportPreference.sport))\
+        .filter(User.clerk_id == clerk_id)\
+        .first()
 def get_user_by_email(db: Session, email: str):
     return db.query(User)\
         .options(joinedload(User.sport_preferences).joinedload(SportPreference.sport))\
@@ -40,7 +44,8 @@ def create_user(db: Session, user: UserCreate):
         first_name=user.first_name,
         last_name=user.last_name,
         bio=user.bio if hasattr(user, 'bio') else None,
-        clerk_id=user.clerk_id
+        clerk_id=user.clerk_id,
+        user_profile_created=user.user_profile_created,
     )
     db.add(db_user)
     db.flush()
@@ -92,7 +97,7 @@ def delete_user(db: Session, user_id: int):
     db.commit()
     return True 
 
-def get_user_profile(db: Session, user_id: int):
+def get_user_profile(db: Session, clerk_id: str):
     """
     Get complete user profile with all related data
     """
@@ -101,5 +106,5 @@ def get_user_profile(db: Session, user_id: int):
             joinedload(User.sport_preferences)
             .joinedload(SportPreference.sport)
         )\
-        .filter(User.id == user_id)\
+        .filter(User.clerk_id == clerk_id)\
         .first() 

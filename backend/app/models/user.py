@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy import Column, Integer, String, DateTime, Boolean
 from sqlalchemy.orm import relationship
 from app.database import Base
 
@@ -12,6 +12,7 @@ class User(Base):
     first_name = Column(String, nullable=True)
     last_name = Column(String, nullable=True)
     bio = Column(String, nullable=True)
+    user_profile_created = Column(Boolean, default=False)
     
     # Use string references for relationships
     created_sessions = relationship("Session", back_populates="creator")
