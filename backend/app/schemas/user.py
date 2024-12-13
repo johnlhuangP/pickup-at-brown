@@ -27,6 +27,7 @@ class UserBase(BaseModel):
         example="Doe",
         description="User's last name"
     )
+    
 
 class SportPreferenceCreate(BaseModel):
     sport_name: str = Field(
@@ -69,6 +70,7 @@ class UserCreate(UserBase):
     sport_preferences: List[SportPreferenceCreate] = Field(
         default=[],
         example=[
+            #TODO: we only need the sport name
             {
                 "sport_name": "Basketball",
                 "skill_level": "intermediate",
@@ -77,6 +79,11 @@ class UserCreate(UserBase):
         ],
         description="List of user's sport preferences"
     )
+    user_profile_created: bool = Field(
+        default=False,
+        example=False,
+        description="Whether the user has created a profile"
+    )
 
 class UserUpdate(BaseModel):
     email: Optional[EmailStr] = None
@@ -84,6 +91,18 @@ class UserUpdate(BaseModel):
     first_name: Optional[str] = None
     last_name: Optional[str] = None
     bio: Optional[str] = None
+    sport_preferences: List[SportPreferenceCreate] = Field(
+        default=[],
+        example=[
+            #TODO: we only need the sport name
+            {
+                "sport_name": "Basketball",
+                "skill_level": "intermediate",
+                "notification_enabled": True
+            }
+        ],
+        description="List of user's sport preferences"
+    )
 
 class UserBasic(BaseModel):
     id: int
@@ -99,7 +118,9 @@ class UserResponse(UserBase):
     id: int
     bio: Optional[str] = None
     sport_preferences: List[SportPreferenceResponse] = []
+    skill_level: str = ""
     full_name: str = ""
+    user_profile_created: bool = False
 
     class Config:
         from_attributes = True
@@ -114,6 +135,7 @@ class UserResponse(UserBase):
             last_name=db_user.last_name or "",
             bio=db_user.bio,
             full_name=db_user.full_name if db_user.first_name and db_user.last_name else "",
+            user_profile_created=db_user.user_profile_created,
             sport_preferences=[SportPreferenceResponse.from_orm(pref) for pref in db_user.sport_preferences]
         )
 

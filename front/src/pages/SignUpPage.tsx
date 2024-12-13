@@ -8,7 +8,13 @@ function SignUpPage() {
       style={{ height: "100vh" }}
     >
       <SignUp
-        forceRedirectUrl="/register"
+        fallbackRedirectUrl="/register"
+        signInFallbackRedirectUrl="/"
+        appearance={{
+          elements: {
+            footerAction: { display: "none" },
+          },
+        }}
       />
     </div>
   );

@@ -39,19 +39,24 @@ const Header = () => {
                   About
                 </Nav.Link>
               </Nav.Item>
+              <SignedOut>
+                <Nav.Item>
+                  <Nav.Link href="/sign-up" className={styles.navLink}>
+                    Register
+                  </Nav.Link>
+                </Nav.Item>
+                <Nav.Item>
+                  <Nav.Link href="/sign-in" className={styles.navLink}>
+                    Sign In
+                  </Nav.Link>
+                </Nav.Item>
+              </SignedOut>
+              <SignedIn>
               <Nav.Item>
                 <Nav.Link href="/profile" className={styles.navLink}>
                   Profile
                 </Nav.Link>
               </Nav.Item>
-              <SignedOut>
-                <Nav.Item>
-                  <Nav.Link href="/sign-up" className={styles.navLink}>
-                    Register/Sign In
-                  </Nav.Link>
-                </Nav.Item>
-              </SignedOut>
-              <SignedIn>
                 <Nav.Item>
                   <SignOutButton>
                     <Nav.Link className={styles.navLink}>Sign Out</Nav.Link>

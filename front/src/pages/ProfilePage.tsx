@@ -2,14 +2,14 @@ import React from 'react';
 import { useEffect, useState } from 'react';
 import './profilepage.css';
 import blankProfile from '../assets/empty_profile.png';
-
+import { useUser } from '@clerk/clerk-react';
 
 const UserProfileCard: React.FC = () => {
-    const [initialData, setInitialData] = useState<any>(null);
+    const { isSignedIn, user, isLoaded } = useUser();
     const [realName, setRealName] = useState('');
     const [username, setUsername] = useState('');
-    const [email, setEmail] = useState('');
-    const [bio, setBio] = React.useState('');
+    const [email, setEmail] = useState<string | undefined>('');
+    const [bio, setBio] = useState('');
     const [skill_level, setSkillLevel] = useState('');
     const [sport_preferences, setSportPreferences] = useState<string[]>([]);
     const [newSport, setNewSport] = useState('');
@@ -19,32 +19,51 @@ const UserProfileCard: React.FC = () => {
         let mounted = true;
 
         async function fetchUserProfile() {
+            if (!isLoaded || !isSignedIn || !user) {
+                return;
+            }
             try {
-                if (!initialData) {
-                    // Mock data
-                    const mockData = {
-                        first_name: "John",
-                        last_name: "Doe",
-                        username: "johndoe",
-                        email: "john.doe@example.com",
-                        bio: "Sophomore at Brown. I've been playing tennis for 5 years.",
-                        skill_level: "intermediate",
-                        notification_enabled: true,
-                        sport_preferences: ["tennis", "basketball", "soccer", "volleyball", "badminton"]
-                    };
+                const CLERK_USER_ID = user.id;
+                console.log(CLERK_USER_ID)
+                const response = await fetch(`http://127.0.0.1:8000/users/${CLERK_USER_ID}/profile`)
+                const data = await response.json();
+                interface SportPreference {
+                    sport_name: string;
+                    skill_level: string;
+                    notification_enabled: boolean;
+                }
+                const userInfo = {
+                    first_name: data.first_name,
+                    last_name: data.last_name,
+                    username: data.username,
+                    bio: data.bio,
+                    skill_level: data.skill_level,
+                    sport_preferences: data.sport_preferences.map((sport: SportPreference) => sport.sport_name)
+                }
+                // // Mock data
+                // const mockData = {
+                //     first_name: "John",
+                //     last_name: "Doe",
+                //     username: "johndoe",
+                //     email: "john.doe@example.com",
+                //     bio: "Sophomore at Brown. I've been playing tennis for 5 years.",
+                //     skill_level: "intermediate",
+                //     notification_enabled: true,
+                //     sport_preferences: ["tennis", "basketball", "soccer", "volleyball", "badminton"]
+                // };
 
-                    // Simulate API delay
-                    await new Promise(resolve => setTimeout(resolve, 1000));
+                // // Simulate API delay
+                // await new Promise(resolve => setTimeout(resolve, 1000));
 
-                    // Only update if component is still mounted
-                    if (mounted) {
-                        setRealName(mockData.first_name + ' ' + mockData.last_name);
-                        setUsername(mockData.username);
-                        setEmail(mockData.email);
-                        setBio(mockData.bio);
-                        setSkillLevel(mockData.skill_level);
-                        setSportPreferences(mockData.sport_preferences);
-                    }
+                // Only update if component is still mounted
+                if (mounted) {
+                    setRealName(userInfo.first_name + ' ' + userInfo.last_name);
+                    setUsername(userInfo.username);
+                    setEmail(user?.primaryEmailAddress?.emailAddress);
+                    setBio(userInfo.bio);
+                    setSkillLevel(userInfo.skill_level);
+                    setSportPreferences(userInfo.sport_preferences);
+
                 }
             } catch (error) {
                 console.error('Error fetching user profile data: ', error);
@@ -57,7 +76,7 @@ const UserProfileCard: React.FC = () => {
         return () => {
             mounted = false;
         };
-    }, [initialData]);
+    }, [user, isLoaded, isSignedIn]);
 
     const handleUpdateProfile = async () => {
         try {
