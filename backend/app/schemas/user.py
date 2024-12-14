@@ -79,10 +79,15 @@ class UserCreate(UserBase):
         ],
         description="List of user's sport preferences"
     )
-    user_profile_created: bool = Field(
+    user_profile_created: Optional[bool] = Field(
         default=False,
         example=False,
         description="Whether the user has created a profile"
+    )
+    skill_level: Optional[str] = Field(
+        default=None,
+        example="intermediate",
+        description="User's skill level"
     )
 
 class UserUpdate(BaseModel):
@@ -91,6 +96,7 @@ class UserUpdate(BaseModel):
     first_name: Optional[str] = None
     last_name: Optional[str] = None
     bio: Optional[str] = None
+    skill_level: Optional[str] = None
     sport_preferences: List[SportPreferenceCreate] = Field(
         default=[],
         example=[
@@ -120,7 +126,7 @@ class UserResponse(UserBase):
     sport_preferences: List[SportPreferenceResponse] = []
     skill_level: str = ""
     full_name: str = ""
-    user_profile_created: bool = False
+    user_profile_created: Optional[bool] = False
 
     class Config:
         from_attributes = True

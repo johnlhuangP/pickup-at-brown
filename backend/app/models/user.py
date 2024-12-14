@@ -6,16 +6,17 @@ class User(Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)
-    clerk_id = Column(String, unique=True, index=True, nullable=True)
+    clerk_id = Column(String, primary_key=True, unique=True, index=True, nullable=True)
     email = Column(String, unique=True, index=True)
     username = Column(String, unique=True, index=True)
     first_name = Column(String, nullable=True)
     last_name = Column(String, nullable=True)
     bio = Column(String, nullable=True)
+    skill_level = Column(String, nullable=True)
     user_profile_created = Column(Boolean, default=False)
     
     # Use string references for relationships
-    created_sessions = relationship("Session", back_populates="creator")
+    created_sessions = relationship("Session", back_populates="creator", foreign_keys="[Session.creator_id]")
     session_participants = relationship("SessionParticipant", back_populates="user")
     messages = relationship("ChatMessage", back_populates="sender")
     activities = relationship("Activity", back_populates="user")
