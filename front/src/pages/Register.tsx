@@ -5,6 +5,13 @@ import "./register.css";
 import { useUser } from "@clerk/clerk-react";
 import { useEffect, useState } from "react";
 
+type Sport = {
+  name: string;
+  label: string;
+  selected: boolean;
+  skillLevel: string;
+}
+
 function Register() {
   const navigate = useNavigate();
   const [formError, setFormError] = useState<string | null>(null);
@@ -14,11 +21,21 @@ function Register() {
   const [first_name, setFirstName] = useState<string | null>("");
   const [last_name, setLastName] = useState<string | null>("");
   const [user_profile_created, setUserProfileCreated] = useState<boolean>(false);
+
+    const [sports, setSports] = useState<Sport[]>([
+    { name: "basketball", label: "Basketball", selected: false, skillLevel: "" },
+    { name: "soccer", label: "Soccer", selected: false, skillLevel: "" },
+    { name: "tennis", label: "Tennis", selected: false, skillLevel: "" },
+    { name: "volleyball", label: "Volleyball", selected: false, skillLevel: "" },
+    { name: "badminton", label: "Badminton", selected: false, skillLevel: "" },
+    { name: "pickleball", label: "Pickleball", selected: false, skillLevel: "" },
+  ]);
+
+
   const [formData, setFormData] = useState({
     username: '',
     skillLevel: '',
     bio: '',
-    sports: [] as string[]
   });
 
   useEffect(() => {
@@ -32,26 +49,49 @@ function Register() {
     setUserProfileCreated(true);
   }, [user]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  const handleFormDataChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >
+  ) => {
     const { name, value } = e.target;
-    if (name === 'sports') {
-      const select = e.target as HTMLSelectElement;
-      const selectedSports = Array.from(select.selectedOptions).map(option => option.value);
-      setFormData(prev => ({
-        ...prev,
-        [name]: selectedSports
-      }));
-    } else {
-      setFormData(prev => ({
-        ...prev,
-        [name]: value
-      }));
-    }
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  // Handle changes in the sports checkboxes/dropdowns
+  const handleSportChange = (
+    index: number,
+    field: "selected" | "skillLevel",
+    value: boolean | string
+  ) => {
+    setSports((prevSports) => {
+      const updated = [...prevSports];
+      // If toggling the checkbox:
+      if (field === "selected" && typeof value === "boolean") {
+        updated[index].selected = value;
+      }
+      // If changing the skill level:
+      if (field === "skillLevel" && typeof value === "string") {
+        updated[index].skillLevel = value;
+      }
+      return updated;
+    });
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setFormError(null); // Reset error state
+
+    const chosenSports = sports
+      .filter((sport) => sport.selected)
+      .map((sport) => ({
+        sport_name: sport.name,
+        skill_level: sport.skillLevel || "beginner", // default if blank
+        notification_enabled: true,
+      }));
 
     console.log(formData);
 
@@ -62,7 +102,8 @@ function Register() {
       "first_name": first_name,
       "last_name": last_name,
       "bio": formData.bio,
-      "sport_preferences": formData.sports.map((sport) => ({ "sport_name": sport, "skill_level": "placeholder", "notification_enabled": true })),
+      "sport_preferences": chosenSports,
+      "skill_level": formData.skillLevel,
       "user_profile_created": user_profile_created,
       "clerk_id": clerkUserId,
     };
@@ -118,7 +159,7 @@ function Register() {
               name="username"
               className="form-control"
               value={formData.username}
-              onChange={handleChange}
+              onChange={handleFormDataChange}
               required
             />
           </div>
@@ -130,7 +171,7 @@ function Register() {
               className="form-select"
               name="skillLevel"
               value={formData.skillLevel}
-              onChange={handleChange}
+              onChange={handleFormDataChange}
               required
             >
               <option value="">Select a skill level</option>
@@ -148,33 +189,41 @@ function Register() {
               className="form-control"
               name="bio"
               value={formData.bio}
-              onChange={handleChange}
+              onChange={handleFormDataChange}
             />
           </div>
 
-          <div className="mb-3">
-            <label htmlFor="sports" className="form-label">
-              Sports Interested In
-            </label>
-            <select
-              className="form-select"
-              name="sports"
-              multiple
-              value={formData.sports}
-              onChange={handleChange}
-              required
-            >
-              <option value="basketball">Basketball</option>
-              <option value="soccer">Soccer</option>
-              <option value="tennis">Tennis</option>
-              <option value="volleyball">Volleyball</option>
-              <option value="Badminton">Badminton</option>
-              <option value="Pickleball">Pickleball</option>
-            </select>
-            <small className="text-muted">
-              Hold Ctrl (Windows) or Command (Mac) to select multiple options.
-            </small>
-          </div>
+          {/* Sports & Skill Levels */}
+          <label className="form-label">Sports Interested In</label>
+          {sports.map((sport, index) => (
+            <div key={sport.name} className="mb-3">
+              <div className="form-check">
+                <input
+                  type="checkbox"
+                  id={`sport-${sport.name}`}
+                  className="form-check-input"
+                  checked={sport.selected}
+                  onChange={(e) => handleSportChange(index, "selected", e.target.checked)}
+                />
+                <label htmlFor={`sport-${sport.name}`} className="form-check-label">
+                  {sport.label}
+                </label>
+              </div>
+              {/* If the sport is selected, show skill dropdown */}
+              {sport.selected && (
+                <select
+                  className="form-select mt-1"
+                  value={sport.skillLevel}
+                  onChange={(e) => handleSportChange(index, "skillLevel", e.target.value)}
+                >
+                  <option value="">Choose skill level</option>
+                  <option value="beginner">Beginner</option>
+                  <option value="intermediate">Intermediate</option>
+                  <option value="advanced">Advanced</option>
+                </select>
+              )}
+            </div>
+          ))}
 
           <button type="submit" className="btn btn-primary w-100 mt-3">
             Save
