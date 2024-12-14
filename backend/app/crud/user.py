@@ -45,6 +45,7 @@ def create_user(db: Session, user: UserCreate):
         last_name=user.last_name,
         bio=user.bio if hasattr(user, 'bio') else None,
         clerk_id=user.clerk_id,
+        skill_level=user.skill_level,
         user_profile_created=user.user_profile_created,
     )
     db.add(db_user)
@@ -81,12 +82,51 @@ def update_user(db: Session, user_id: int, user: UserUpdate):
         return None
     
     for var, value in vars(user).items():
-        if value is not None:
-            setattr(db_user, var, value)
+        if var == 'sport_preferences':
+            if value is not None:
+                # Update sport preferences
+                update_sport_preferences(db, db_user, value)
+        else:
+            if value is not None:
+                setattr(db_user, var, value)
     
     db.commit()
     db.refresh(db_user)
     return db_user
+def update_sport_preferences(db: Session, db_user: User, new_preferences: list):
+    # Get current sport preferences
+    old_preferences = set()
+    for pref in db_user.sport_preferences:
+        sport_id = get_sport_from_name(db, pref.sport_name)
+        if not sport_id:
+            continue
+        old_preferences.add(sport_id.id)
+
+    # Create a set of new sport IDs
+    new_pref = set()
+    for pref in new_preferences:
+        sport_id = get_sport_from_name(db, pref.sport_name)
+        if not sport_id:
+            continue
+        new_pref.add(sport_id.id)
+    
+    # Delete old preferences that are not in the new list
+    for sport_id in list(old_preferences):
+        if sport_id not in new_pref:
+            sport_pref = db.query(SportPreference)\
+                .filter(SportPreference.user_id == db_user.id)\
+                .filter(SportPreference.sport_id == sport_id)\
+                .first()
+            db.delete(sport_pref)
+            db.commit()
+    
+    # Add new preferences that are not already associated with the user
+    for sport_id in list(new_pref):
+        if sport_id not in old_preferences:
+            new_pref = SportPreference(user_id=db_user.id, sport_id=sport_id, skill_level="beginner", notification_enabled=True, created_at=datetime.utcnow())
+            db.add(new_pref)
+    
+    db.commit()
 
 def delete_user(db: Session, user_id: int):
     db_user = get_user(db, user_id)

@@ -15,9 +15,10 @@ router = AuthRouter(
 def create_session(
     session: SessionCreate, 
     creator_id: int,
+    clerk_id: str,
     db: Session = Depends(get_db)
 ):
-    return session_crud.create_session(db=db, session=session, creator_id=creator_id)
+    return session_crud.create_session(db=db, session=session, creator_id=creator_id, clerk_id=clerk_id)
 
 @router.get("/", response_model=List[SessionResponse])
 def list_sessions(
@@ -68,3 +69,8 @@ def leave_session(session_id: int, user_id: int, db: Session = Depends(get_db)):
     if not result:
         raise HTTPException(status_code=400, detail="Cannot leave session")
     return {"message": "Successfully left session"}
+
+@router.get("/{creator_id}/session-history")
+def get_session_history(creator_id: int, db: Session = Depends(get_db)):
+    sessions = session_crud.get_session_history(db, creator_id=creator_id)
+    return sessions

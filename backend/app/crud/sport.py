@@ -10,7 +10,7 @@ def get_sport(db: Session, sport_id: int):
     return db.query(Sport).filter(Sport.id == sport_id).first()
 
 def get_sport_from_name(db: Session, sport_name: str):
-    return db.query(Sport).filter(Sport.name == sport_name).first()
+    return db.query(Sport).filter(Sport.name.ilike(sport_name)).first()
 
 def get_sports(db: Session, skip: int = 0, limit: int = 100):
     return db.query(Sport).offset(skip).limit(limit).all()

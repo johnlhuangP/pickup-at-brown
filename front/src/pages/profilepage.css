@@ -1,52 +1,4 @@
-body {
-    background-color: #f9f9fa;
-}
-
-.padding {
-    padding: 3rem !important;
-}
-
-.user-card-full {
-    overflow: hidden;
-}
-
-.card {
-    border-radius: 5px;
-    -webkit-box-shadow: 0 1px 20px 0 rgba(69,90,100,0.08);
-    box-shadow: 0 1px 20px 0 rgba(69,90,100,0.08);
-    border: none;
-    margin-bottom: 30px;
-}
-
-.m-r-0 {
-    margin-right: 0px;
-}
-
-.m-l-0 {
-    margin-left: 0px;
-}
-
-.user-card-full .user-profile {
-    border-radius: 5px 0 0 5px;
-}
-
-.bg-c-lite-green {
-        background: -webkit-gradient(linear, left top, right top, from(#f29263), to(#ee5a6f));
-    background: linear-gradient(to right, #ee5a6f, #f29263);
-}
-
-.user-profile {
-    padding: 20px 0;
-}
-
-.card-block {
-    padding: 1.25rem;
-}
-
-.m-b-25 {
-    margin-bottom: 25px;
-}
-
+/* User Profile CSS */
 .img-radius {
     border-radius: 50%;
     width: 100px;
@@ -55,96 +7,159 @@ body {
     border: 3px solid #fff;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
+.container {
+    margin: 0 auto;
+    padding: 20px;
+    max-width: 1200px;
+}
 
+#user-profile .main-box {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+}
 
- 
-h6 {
+.main-box h2 {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.profile-status {
+    color: green;
+    margin-bottom: 15px;
+}
+
+.profile-img {
+    border-radius: 50%;
+    width: 150px;
+    height: 150px;
+}
+
+.profile-label {
+    margin: 10px 0;
+}
+
+.profile-label .label {
+    padding: 5px 10px;
     font-size: 14px;
 }
 
-.card .card-block p {
-    line-height: 25px;
+.profile-stars {
+    color: gold;
+    margin-bottom: 15px;
 }
 
-@media only screen and (min-width: 1400px){
-p {
+.profile-since {
     font-size: 14px;
-}
+    color: #666;
+    margin-bottom: 15px;
 }
 
-.card-block {
-    padding: 1.25rem;
+.profile-details ul {
+    list-style: none;
+    padding: 0;
 }
-.sports-grid {
+
+.profile-details ul li {
+    margin-bottom: 10px;
+}
+
+.profile-message-btn a {
+    text-decoration: none;
+    padding: 10px 20px;
+    color: white;
+    background-color: green;
+    border-radius: 5px;
+}
+
+.profile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.profile-header h3 {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.edit-profile {
+    background: #007bff;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+.profile-user-info {
+    margin-top: 20px;
+}
+
+.profile-user-details {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.profile-social ul {
+    list-style: none;
+    padding: 0;
+}
+
+.profile-social ul li {
+    margin-bottom: 10px;
+}
+
+.tabs-wrapper {
+    margin-top: 20px;
+}
+
+.nav-tabs {
+    border-bottom: 2px solid #ddd;
+    gap: 2rem;
+}
+.nav-tabs a {
+    font-size: 24px; /* Adjust the size as needed */
+}
+.nav-tabs .active a {
+    color: #007bff;
+    font-weight: bold;
+}
+
+.widget-users {
     display: flex;
     flex-wrap: wrap;
 }
 
-.sport-item {
-    flex: 0 0 calc(33.333% - 1rem);
+.widget-users li {
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    margin: 10px;
+    text-align: center;
 }
 
-.b-b-default {
-    border-bottom: 1px solid #e0e0e0;
-}
-
-.m-b-20 {
-    margin-bottom: 20px;
-}
-
-.p-b-5 {
-    padding-bottom: 5px !important;
-}
-
-.card .card-block p {
-    line-height: 25px;
-}
-
-.m-b-10 {
+.widget-users .img {
     margin-bottom: 10px;
 }
 
-.text-muted {
-    color: #919aa3 !important;
+.widget-users .details .name a {
+    text-decoration: none;
+    font-weight: bold;
+    color: #333;
 }
 
-.b-b-default {
-    border-bottom: 1px solid #e0e0e0;
+.widget-users .details .time {
+    font-size: 12px;
+    color: #999;
 }
 
-.f-w-600 {
-    font-weight: 600;
+.widget-users .details .type .label {
+    padding: 3px 6px;
+    font-size: 12px;
 }
-
-.m-b-20 {
-    margin-bottom: 20px;
-}
-
-.m-t-40 {
-    margin-top: 20px;
-}
-
-.p-b-5 {
-    padding-bottom: 5px !important;
-}
-
-.m-b-10 {
-    margin-bottom: 10px;
-}
-
-.m-t-40 {
-    margin-top: 20px;
-}
-
-.user-card-full .social-link li {
-    display: inline-block;
-}
-
-.user-card-full .social-link li a {
-    font-size: 20px;
-    margin: 0 10px 0 0;
-    -webkit-transition: all 0.3s ease-in-out;
-    transition: all 0.3s ease-in-out;
-}
-
-
