@@ -1,9 +1,28 @@
-import { useState, useEffect } from 'react';
-import styles from './feed.module.css'; // Import the CSS module for styling
-import Session from './Session'; // Import the Session component
+import { useState, useEffect } from "react";
+import styles from "./feed.module.css";
+import Session from "./Session";
+import SessionSidebar from "./SessionSidebar";
+import { API_BASE_URL } from "../config";
+import { useAuth } from '../contexts/AuthContext';
+import SessionForm from "./SessionForm";
 
 interface FeedProps {
-  selectedSport: string; // Selected sport passed as prop from the parent component
+  selectedSport: string;
+}
+
+interface UserData {
+  id: number;
+  username: string;
+  email: string;
+  first_name: string;
+  last_name: string;
+  bio: string;
+  supabase_id: string;
+  sport_preferences: Array<{
+    sport_name: string;
+    skill_level: string;
+    notification_enabled: boolean;
+  }>;
 }
 
 interface SessionData {
@@ -14,68 +33,208 @@ interface SessionData {
   datetime: string;
   max_participants: number;
   sport_id: number;
-  creator: { id: number; username: string } | null;
-  sport: { id: number; name: string };
-  location: { id: number; name: string };
+  participants?: Array<{
+    id: number;
+    username: string;
+  }>;
+  creator: {
+    id: number;
+    username: string;
+    email: string;
+  };
+  sport: {
+    id: number;
+    name: string;
+  };
+  location: {
+    id: number;
+    name: string;
+  };
   current_participants: number;
 }
 
 const Feed = ({ selectedSport }: FeedProps) => {
-  const [sessions, setSessions] = useState<SessionData[]>([]); // Store session data
-  const [loading, setLoading] = useState<boolean>(false); // Loading state
-  const [error, setError] = useState<string | null>(null); // Error handling state
+  const { user } = useAuth();
+  const [userData, setUserData] = useState<UserData | null>(null);
+  const [allSessions, setAllSessions] = useState<SessionData[]>([]);
+  const [filteredSessions, setFilteredSessions] = useState<SessionData[]>([]);
+  const [selectedSession, setSelectedSession] = useState<SessionData | null>(null);
+  const [isCreating, setIsCreating] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  // Fetch session data based on the selected sport
+  // Fetch user data from our backend
   useEffect(() => {
-    if (!selectedSport) return;
+    const fetchUserData = async () => {
+      if (!user?.id) return;
+      
+      try {
+        const response = await fetch(`${API_BASE_URL}/users/supabase/${user.id}`);
+        if (!response.ok) throw new Error('Failed to fetch user data');
+        const data = await response.json();
+        setUserData(data);
+      } catch (err) {
+        console.error("Error fetching user data:", err);
+        setError("Failed to fetch user data");
+      }
+    };
 
+    fetchUserData();
+  }, [user?.id]);
+
+  const fetchSessionParticipants = async (sessionId: number) => {
+    try {
+      const participantsResponse = await fetch(
+        `${API_BASE_URL}/sessions/${sessionId}/participants`
+      );
+      if (!participantsResponse.ok) throw new Error('Failed to fetch participants');
+      return await participantsResponse.json();
+    } catch (error) {
+      console.error(`Error fetching participants for session ${sessionId}:`, error);
+      return [];
+    }
+  };
+
+  const fetchSessions = async () => {
     setLoading(true);
-    setError(null);
+    try {
+      const response = await fetch(`${API_BASE_URL}/sessions/`);
+      if (!response.ok) throw new Error('Failed to fetch sessions');
+      const sessions = await response.json();
 
-    // Determine the URL based on the selected sport
-    const url = selectedSport === 'All Upcoming'
-      ? 'http://127.0.0.1:8000/sessions/' // No filter
-      : `http://127.0.0.1:8000/sessions/?sport_type=${selectedSport}`; // Filter by sport
+      // Fetch participants for each session
+      const sessionsWithParticipants = await Promise.all(
+        sessions.map(async (session: SessionData) => {
+          const participants = await fetchSessionParticipants(session.id);
+          return {
+            ...session,
+            participants
+          };
+        })
+      );
 
-    fetch(url) // Fetch data from the backend
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Failed to fetch sessions');
+      setAllSessions(sessionsWithParticipants);
+      
+      // Update selected session if it exists
+      if (selectedSession) {
+        const updatedSelectedSession = sessionsWithParticipants.find(
+          session => session.id === selectedSession.id
+        );
+        if (updatedSelectedSession) {
+          setSelectedSession(updatedSelectedSession);
         }
-        return response.json();
-      })
-      .then((data) => {
-        setSessions(data); // Set fetched session data
-        setLoading(false);  // Turn off loading after fetch is complete
-      })
-      .catch((err) => {
-        setError(err.message); // Handle any errors during the fetch
-        setLoading(false);     // Turn off loading even if there is an error
-      });
-  }, [selectedSport]); // Fetch sessions whenever selectedSport changes
+      }
+    } catch (err) {
+      console.error("Fetch error:", err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  // Render loading state
+  useEffect(() => {
+    if (selectedSport === 'All Upcoming') {
+      setFilteredSessions(allSessions);
+    } else {
+      const filtered = allSessions.filter(session => session.sport.name === selectedSport);
+      setFilteredSessions(filtered);
+    }
+  }, [selectedSport, allSessions]);
+
+  useEffect(() => {
+    fetchSessions();
+  }, []);
+
+  const handleSessionClick = (session: SessionData) => {
+    setSelectedSession(session);
+    setIsCreating(false);  // Close create form when selecting a session
+  };
+
+  const handleCloseSidebar = () => {
+    setSelectedSession(null);
+  };
+
+  const handleSessionCreated = async (sessionData: any) => {
+    setIsCreating(false);
+    setSuccessMessage('Session created successfully!');
+    await fetchSessions();
+    setSelectedSession(sessionData);
+    
+    setTimeout(() => {
+      setSuccessMessage(null);
+    }, 3000);
+  };
+
+  const handleParticipantUpdate = async () => {
+    // Refresh the sessions to get updated participant lists
+    await fetchSessions();
+  };
+
+  if (!user) {
+    return <div className={styles.error}>Please sign in to view sessions</div>;
+  }
+
   if (loading) {
     return <div className={styles.loading}>Loading sessions...</div>;
   }
 
-  // Render error state
   if (error) {
     return <div className={styles.error}>{error}</div>;
   }
 
-  // Render "No sessions" state if no sessions found
-  if (sessions.length === 0) {
+  if (filteredSessions.length === 0) {
     return <div>No sessions available for {selectedSport}</div>;
   }
 
   return (
     <div className={styles.feed}>
-      <h2>{selectedSport ? `Sessions for: ${selectedSport}` : 'Select a sport to view sessions'}</h2>
-      {/* Map through sessions and create a Session component for each */}
-      {sessions.map((session) => (
-        <Session key={session.id} session={session} /> // Pass the session data to the Session component
-      ))}
+      <div className={styles.sessionsPanel}>
+        <div className={styles.feedHeader}>
+          <h2 className={styles.feedTitle}>Available Sessions</h2>
+          <button 
+            className={styles.newSessionButton}
+            onClick={() => setIsCreating(true)}
+          >
+            + New Session
+          </button>
+        </div>
+        {successMessage && (
+          <div className={styles.successMessage}>
+            {successMessage}
+          </div>
+        )}
+        <div className={styles.feedGrid}>
+          {filteredSessions.map((session) => (
+            <div
+              key={session.id}
+              className={`${styles.sessionCard} ${
+                selectedSession?.id === session.id ? styles.active : ""
+              }`}
+              onClick={() => handleSessionClick(session)}
+            >
+              <Session
+                {...session}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {isCreating ? (
+        <SessionForm 
+          onClose={() => setIsCreating(false)}
+          onSubmit={handleSessionCreated}
+          userData={userData}
+        />
+      ) : selectedSession && (
+        <SessionSidebar
+          selectedSession={selectedSession}
+          onClose={handleCloseSidebar}
+          currentUser={userData}
+          onParticipantUpdate={handleParticipantUpdate}
+        />
+      )}
     </div>
   );
 };

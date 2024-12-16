@@ -1,66 +1,93 @@
 import React, { useEffect, useState } from 'react';
-import "./pastsession.css";
-import Session from './Session'; // Import the Session component
-import { useUser } from '@clerk/clerk-react';
+import { API_BASE_URL } from '../config';
 
-interface SessionData {
-    id: number;
-    title: string;
-    description: string;
-    location_id: number;
-    datetime: string;
-    max_participants: number;
-    sport_id: number;
-    creator: { id: number; username: string } | null;
-    sport: { id: number; name: string };
-    location: { id: number; name: string };
-    current_participants: number;
-}
 interface PastSessionsProps {
-    creator_id: number;
+  creator_id: number;
 }
-const PastSessions = ({creator_id} : PastSessionsProps) => {
-    const [sessions, setSessions] = useState<SessionData[]>([]); // Store session data
-    const [loading, setLoading] = useState<boolean>(false); // Loading state
-    const [error, setError] = useState<string | null>(null); // Error handling state
-    const { user, isLoaded, isSignedIn } = useUser();
 
-    // Fetch session data based on the selected sport
-    useEffect(() => {
-        if (!user) return;
-        setLoading(true);
-        setError(null);
+interface Session {
+  id: number;
+  title: string;
+  datetime: string;
+  sport: {
+    name: string;
+  };
+  location: {
+    name: string;
+  };
+  current_participants: number;
+  max_participants: number;
+}
 
-        // Determine the URL based on the selected sport
-        const url = `http://127.0.0.1:8000/sessions/${creator_id}/session-history`; // Filter by sport
+const PastSessions: React.FC<PastSessionsProps> = ({ creator_id }) => {
+  const [sessions, setSessions] = useState<Session[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-        fetch(url) // Fetch data from the backend
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error('Failed to fetch sessions');
-                }
-                return response.json();
-            })
-            .then((data) => {
-                setSessions(data); // Set fetched session data
-                setLoading(false);  // Turn off loading after fetch is complete
-            })
-            .catch((err) => {
-                setError(err.message); // Handle any errors during the fetch
-                setLoading(false);     // Turn off loading even if there is an error
-            });
-    }, [creator_id]); // Fetch sessions whenever selectedSport changes
+  useEffect(() => {
+    const fetchPastSessions = async () => {
+      if (!creator_id) return;
 
-    return (
-        <div>
-            <h1>Past Sessions</h1>
-            <div className="feed">
-                {sessions.length == 0 ? <div> <h3>No past sessions</h3></div> : null}
-                {sessions.map((session) => (
-                    <Session key={session.id} session={session} /> // Pass the session data to the Session component
-                ))}
-            </div>
+      try {
+        const response = await fetch(`${API_BASE_URL}/sessions/${creator_id}/session-history`);
+        if (!response.ok) throw new Error('Failed to fetch past sessions');
+        const data = await response.json();
+        setSessions(data);
+      } catch (err) {
+        console.error('Error fetching past sessions:', err);
+        setError('Failed to load past sessions');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPastSessions();
+  }, [creator_id]);
+
+  if (loading) {
+    return <div>Loading past sessions...</div>;
+  }
+
+  if (error) {
+    return <div className="alert alert-danger">{error}</div>;
+  }
+
+  if (sessions.length === 0) {
+    return <div>No past sessions found.</div>;
+  }
+
+  return (
+    <div className="past-sessions">
+      {sessions.map((session) => (
+        <div key={session.id} className="session-card">
+          <h4>{session.title}</h4>
+          <div className="session-details">
+            <p>
+              <strong>Sport:</strong> {session.sport.name}
+            </p>
+            <p>
+              <strong>Location:</strong> {session.location.name}
+            </p>
+            <p>
+              <strong>Date:</strong>{' '}
+              {new Date(session.datetime).toLocaleDateString()}
+            </p>
+            <p>
+              <strong>Time:</strong>{' '}
+              {new Date(session.datetime).toLocaleTimeString([], {
+                hour: '2-digit',
+                minute: '2-digit'
+              })}
+            </p>
+            <p>
+              <strong>Participants:</strong>{' '}
+              {session.current_participants} / {session.max_participants}
+            </p>
+          </div>
         </div>
-    );
+      ))}
+    </div>
+  );
 };
-export default PastSessions
+
+export default PastSessions;

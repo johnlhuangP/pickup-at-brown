@@ -6,9 +6,9 @@ class User(Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)
-    clerk_id = Column(String, unique=True, index=True, nullable=True)
     email = Column(String, unique=True, index=True)
     username = Column(String, unique=True, index=True)
+    supabase_id = Column(String, unique=True, index=True, nullable=True)
     first_name = Column(String, nullable=True)
     last_name = Column(String, nullable=True)
     bio = Column(String, nullable=True)

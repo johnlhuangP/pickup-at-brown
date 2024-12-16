@@ -1,14 +1,37 @@
-import { CSidebar, CSidebarHeader, CSidebarBrand, CNavTitle, CNavItem, CBadge, CSidebarNav, CSidebarToggler } from "@coreui/react";
+import { useState, useEffect } from 'react';
+import { CSidebar, CSidebarHeader, CSidebarBrand, CNavTitle, CNavItem, CBadge, CSidebarNav } from "@coreui/react";
 import styles from './sidebar.module.css';
+import { API_BASE_URL } from '../config';
+
+interface Sport {
+  id: number;
+  name: string;
+}
 
 interface SidebarProps {
-  onSportSelect: (sport: string) => void;  // Function passed from HomePage
-  selectedSport: string; // The selected sport passed from HomePage
+  onSportSelect: (sport: string) => void;
+  selectedSport: string;
 }
 
 const Sidebar = ({ onSportSelect, selectedSport }: SidebarProps) => {
+  const [sports, setSports] = useState<Sport[]>([]);
+
+  useEffect(() => {
+    const fetchSports = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/sports/`);
+        if (!response.ok) throw new Error('Failed to fetch sports');
+        const data = await response.json();
+        setSports(data);
+      } catch (error) {
+        console.error('Error fetching sports:', error);
+      }
+    };
+
+    fetchSports();
+  }, []);
+
   const handleSportSelect = (sport: string, event: React.MouseEvent) => {
-    // Prevent default navigation behavior
     event.preventDefault();
     onSportSelect(sport);
   };
@@ -20,7 +43,6 @@ const Sidebar = ({ onSportSelect, selectedSport }: SidebarProps) => {
       </CSidebarHeader>
       <CSidebarNav>
         <CNavTitle>Sports</CNavTitle>
-        {/* Apply light blue color to the selected sport */}
         <CNavItem
           href="/"
           onClick={(event) => handleSportSelect('All Upcoming', event)}
@@ -28,31 +50,17 @@ const Sidebar = ({ onSportSelect, selectedSport }: SidebarProps) => {
         >
           All Upcoming
         </CNavItem>
-        <CNavItem
-          href="/"
-          onClick={(event) => handleSportSelect('Basketball', event)}
-          className={selectedSport === 'Basketball' ? styles.selectedSport : ''}
-        >
-          Basketball
-        </CNavItem>
-        <CNavItem
-          href="/"
-          onClick={(event) => handleSportSelect('Soccer', event)}
-          className={selectedSport === 'Soccer' ? styles.selectedSport : ''}
-        >
-          Soccer <CBadge color="primary ms-auto">NEW</CBadge>
-        </CNavItem>
-        <CNavItem
-          href="/"
-          onClick={(event) => handleSportSelect('Other Sport', event)}
-          className={selectedSport === 'Other Sport' ? styles.selectedSport : ''}
-        >
-          Other Sport
-        </CNavItem>
+        {sports.map(sport => (
+          <CNavItem
+            key={sport.id}
+            href="/"
+            onClick={(event) => handleSportSelect(sport.name, event)}
+            className={selectedSport === sport.name ? styles.selectedSport : ''}
+          >
+            {sport.name}
+          </CNavItem>
+        ))}
       </CSidebarNav>
-      <CSidebarHeader className="border-top">
-        <CSidebarToggler />
-      </CSidebarHeader>
     </CSidebar>
   );
 };

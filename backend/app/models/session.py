@@ -13,7 +13,6 @@ class Session(Base):
     max_participants = Column(Integer)
     creator_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     sport_id = Column(Integer, ForeignKey("sports.id"), nullable=False)
-
     creator = relationship("User", back_populates="created_sessions")
     participants = relationship("SessionParticipant", back_populates="session")
     messages = relationship("ChatMessage", back_populates="session")

@@ -25,7 +25,7 @@ def get_sessions(db: SQLAlchemySession, skip: int = 0, limit: int = 100, sport_t
         query = query.join(Session.sport).filter(Sport.name == sport_type)
     return query.offset(skip).limit(limit).all()
 
-def create_session(db: SQLAlchemySession, session: SessionCreate, creator_id: int, clerk_id: str):
+def create_session(db: SQLAlchemySession, session: SessionCreate, creator_id: int):
     db_session = Session(
         title=session.title,
         description=session.description,
@@ -33,8 +33,7 @@ def create_session(db: SQLAlchemySession, session: SessionCreate, creator_id: in
         datetime=session.datetime,
         max_participants=session.max_participants,
         sport_id=session.sport_id,
-        creator_id=creator_id,
-        clerk_id=clerk_id
+        creator_id=creator_id
     )
     db.add(db_session)
     db.commit()

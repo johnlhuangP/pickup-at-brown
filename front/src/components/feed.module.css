@@ -1,21 +1,109 @@
 /* feed.module.css */
 .feed {
-    width: 100%;          /* Take full width of the container */
-    max-width: 600px;     /* Limit the maximum width */
-    background-color: #f9f9f9;
-    padding: 10px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin-left: 0px;    /* Create space between the sidebar and the feed */
+    display: flex;
+    height: calc(100vh - 64px); /* Adjust based on your header height */
+    overflow: hidden;
+}
+
+.sessionsPanel {
+    width: 400px;
+    min-width: 400px;
+    border-right: 1px solid #e2e8f0;
+    background: white;
+}
+
+.feedTitle {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #2d3748;
+    padding: 20px;
+    border-bottom: 1px solid #e2e8f0;
+    background: #f8fafc;
+}
+
+.feedGrid {
+    display: flex;
+    flex-direction: column;
+}
+
+.sessionCard {
+    cursor: pointer;
+    border-bottom: 1px solid #e2e8f0;
+    transition: all 0.2s ease;
+}
+
+.sessionCard:hover {
+    background: #f7fafc;
+}
+
+.sessionCard.active {
+    background: #ebf8ff;
+    border-left: 4px solid #4299e1;
+}
+
+/* Loading and error states */
+.loading, .error {
+    text-align: center;
+    padding: 40px;
+    font-size: 1.2rem;
+    color: #718096;
+}
+
+.error {
+    color: #e53e3e;
+}
+
+.feedHeader {
+    padding: 20px;
+    border-bottom: 1px solid #e2e8f0;
+    background: #f8fafc;
+}
+
+.feedTitle {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 12px;
+}
+
+.newSessionButton {
+    width: 100%;
+    background: #4299e1;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.newSessionButton:hover {
+    background: #3182ce;
+}
+
+.successMessage {
+  background-color: #C6F6D5;
+  color: #2F855A;
+  padding: 12px 16px;
+  margin: 12px 20px;
+  border-radius: 6px;
+  text-align: center;
+  animation: fadeIn 0.3s ease-in;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
   }
-  
-  .feed h2 {
-    font-size: 2rem;
-    margin-bottom: 20px;
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
-  
-  .feed-content {
-    font-size: 1rem;
-    color: #333;
-  }
+}
   
