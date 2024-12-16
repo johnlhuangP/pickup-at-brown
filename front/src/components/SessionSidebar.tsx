@@ -14,7 +14,7 @@ interface SessionSidebarProps {
     email: string;
     supabase_id: string;
   } | null;
-  onParticipantUpdate: () => Promise<void>;
+  onParticipantUpdate: (isJoining: boolean) => void;
 }
 
 const SessionSidebar: React.FC<SessionSidebarProps> = ({
@@ -68,7 +68,7 @@ const SessionSidebar: React.FC<SessionSidebarProps> = ({
 
       setIsParticipant(true);
       setError(null);
-      await onParticipantUpdate();
+      onParticipantUpdate(true);
     } catch (error) {
       console.error("Error joining session:", error);
       setError(error.message || "Failed to join session");
@@ -99,7 +99,7 @@ const SessionSidebar: React.FC<SessionSidebarProps> = ({
 
       setIsParticipant(false);
       setError(null);
-      await onParticipantUpdate();
+      onParticipantUpdate(false);
     } catch (error) {
       console.error("Error leaving session:", error);
       setError(error.message || "Failed to leave session");
