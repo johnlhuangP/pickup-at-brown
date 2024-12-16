@@ -166,9 +166,23 @@ const Feed = ({ selectedSport }: FeedProps) => {
     }, 3000);
   };
 
-  const handleParticipantUpdate = async () => {
-    // Refresh the sessions to get updated participant lists
-    await fetchSessions();
+  const handleParticipantUpdate = async (sessionId: number, isJoining: boolean) => {
+    setAllSessions(prevSessions => 
+      prevSessions.map(session => {
+        if (session.id === sessionId) {
+          return {
+            ...session,
+            current_participants: isJoining 
+              ? session.current_participants + 1 
+              : session.current_participants - 1,
+            participants: isJoining 
+              ? [...(session.participants || []), userData?.id]
+              : (session.participants || []).filter(id => id !== userData?.id)
+          };
+        }
+        return session;
+      })
+    );
   };
 
   if (!user) {
@@ -232,7 +246,7 @@ const Feed = ({ selectedSport }: FeedProps) => {
           selectedSession={selectedSession}
           onClose={handleCloseSidebar}
           currentUser={userData}
-          onParticipantUpdate={handleParticipantUpdate}
+          onParticipantUpdate={(isJoining) => handleParticipantUpdate(selectedSession.id, isJoining)}
         />
       )}
     </div>
