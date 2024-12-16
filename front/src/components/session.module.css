@@ -31,3 +31,71 @@
     font-size: 1.2rem;
   }
   
+  .sessionCard {
+    padding: 16px;
+    transition: background 0.2s ease;
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  
+  .title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #2d3748;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 200px;
+  }
+  
+  .sportBadge {
+    font-size: 0.75rem;
+    padding: 4px 8px;
+    border-radius: 12px;
+    background: #e2e8f0;
+    color: #4a5568;
+  }
+  
+  .details {
+    display: flex;
+    gap: 16px;
+  }
+  
+  .detail {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    color: #718096;
+    font-size: 0.875rem;
+  }
+  
+  .icon {
+    width: 16px;
+    height: 16px;
+    color: #a0aec0;
+    margin-top: 2px;
+  }
+  
+  .datetime {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    line-height: 1.2;
+  }
+  
+  .date {
+    font-size: 0.85rem;
+    color: #4a5568;
+  }
+  
+  .time {
+    font-weight: 500;
+    color: #2d3748;
+  }
+  

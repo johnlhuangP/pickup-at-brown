@@ -1,33 +1,11 @@
 from pydantic import BaseModel, EmailStr, Field
 from typing import Optional, List
-from datetime import datetime
 from enum import Enum
 
 class SkillLevel(str, Enum):
     BEGINNER = "beginner"
     INTERMEDIATE = "intermediate"
     ADVANCED = "advanced"
-
-class UserBase(BaseModel):
-    email: EmailStr = Field(
-        example="john.doe@brown.edu",
-        description="User's email address"
-    )
-    username: str = Field(
-        example="johndoe",
-        description="Username for the account"
-    )
-    first_name: Optional[str] = Field(
-        default="",
-        example="John",
-        description="User's first name"
-    )
-    last_name: Optional[str] = Field(
-        default="",
-        example="Doe",
-        description="User's last name"
-    )
-    
 
 class SportPreferenceCreate(BaseModel):
     sport_name: str = Field(
@@ -60,8 +38,28 @@ class SportPreferenceResponse(BaseModel):
             notification_enabled=sport_pref.notification_enabled
         )
 
+class UserBase(BaseModel):
+    email: EmailStr = Field(
+        example="john.doe@brown.edu",
+        description="User's email address"
+    )
+    username: str = Field(
+        example="johndoe",
+        description="Username for the account"
+    )
+    first_name: Optional[str] = Field(
+        default="",
+        example="John",
+        description="User's first name"
+    )
+    last_name: Optional[str] = Field(
+        default="",
+        example="Doe",
+        description="User's last name"
+    )
+
 class UserCreate(UserBase):
-    clerk_id: Optional[str] = None
+    supabase_id: str = Field(description="User's Supabase ID")
     bio: Optional[str] = Field(
         default=None,
         example="I love sports!",
@@ -70,7 +68,6 @@ class UserCreate(UserBase):
     sport_preferences: List[SportPreferenceCreate] = Field(
         default=[],
         example=[
-            #TODO: we only need the sport name
             {
                 "sport_name": "Basketball",
                 "skill_level": "intermediate",
@@ -78,16 +75,6 @@ class UserCreate(UserBase):
             }
         ],
         description="List of user's sport preferences"
-    )
-    user_profile_created: Optional[bool] = Field(
-        default=False,
-        example=False,
-        description="Whether the user has created a profile"
-    )
-    skill_level: Optional[str] = Field(
-        default=None,
-        example="intermediate",
-        description="User's skill level"
     )
 
 class UserUpdate(BaseModel):
@@ -96,37 +83,14 @@ class UserUpdate(BaseModel):
     first_name: Optional[str] = None
     last_name: Optional[str] = None
     bio: Optional[str] = None
-    skill_level: Optional[str] = None
-    sport_preferences: List[SportPreferenceCreate] = Field(
-        default=[],
-        example=[
-            #TODO: we only need the sport name
-            {
-                "sport_name": "Basketball",
-                "skill_level": "intermediate",
-                "notification_enabled": True
-            }
-        ],
-        description="List of user's sport preferences"
-    )
-
-class UserBasic(BaseModel):
-    id: int
-    username: str
-    email: str
-    first_name: str
-    last_name: str
-    
-    class Config:
-        from_attributes = True
+    sport_preferences: Optional[List[SportPreferenceCreate]] = None
 
 class UserResponse(UserBase):
     id: int
     bio: Optional[str] = None
     sport_preferences: List[SportPreferenceResponse] = []
-    skill_level: str = ""
+    supabase_id: str
     full_name: str = ""
-    user_profile_created: Optional[bool] = False
 
     class Config:
         from_attributes = True
@@ -141,7 +105,7 @@ class UserResponse(UserBase):
             last_name=db_user.last_name or "",
             bio=db_user.bio,
             full_name=db_user.full_name if db_user.first_name and db_user.last_name else "",
-            user_profile_created=db_user.user_profile_created,
+            supabase_id=db_user.supabase_id,
             sport_preferences=[SportPreferenceResponse.from_orm(pref) for pref in db_user.sport_preferences]
         )
 

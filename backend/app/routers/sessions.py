@@ -15,10 +15,9 @@ router = AuthRouter(
 def create_session(
     session: SessionCreate, 
     creator_id: int,
-    clerk_id: str,
     db: Session = Depends(get_db)
 ):
-    return session_crud.create_session(db=db, session=session, creator_id=creator_id, clerk_id=clerk_id)
+    return session_crud.create_session(db=db, session=session, creator_id=creator_id)
 
 @router.get("/", response_model=List[SessionResponse])
 def list_sessions(
@@ -34,6 +33,14 @@ def list_sessions(
         sport_type=sport_type
     )
     return sessions
+
+@router.get("/{session_id}/participants")
+def list_session_participants(session_id: int, db: Session = Depends(get_db)):
+    db_session = session_crud.get_session(db, session_id=session_id)
+    if db_session is None:
+        raise HTTPException(status_code=404, detail="Session not found")
+    return [participant.user_id for participant in db_session.participants]
+
 
 @router.get("/{session_id}", response_model=SessionResponse)
 def get_session(session_id: int, db: Session = Depends(get_db)):

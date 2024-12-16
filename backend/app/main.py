@@ -1,37 +1,26 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import sessions, users, sports, locations, friends
-from app.models import *
+from app.routers import users, sports, sessions, locations, chat_messages, websockets
 
 app = FastAPI()
-
-origins = [
-    "http://localhost:5173",     # Vite dev server
-    "http://127.0.0.1:5173"      # Sometimes localhost is recognized as 127.0.0.1
-]
 
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["http://localhost:5173"],  # Your frontend URL
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["*"],  # Allows all methods
+    allow_headers=["*"],  # Allows all headers
 )
 
-# Public routes (if any) would go here
-@app.get("/health")
-async def health_check():
-    return {"status": "healthy"}
-
-# Protected routes
-app.include_router(friends.router)
-app.include_router(locations.router)
+# Include routers
 app.include_router(users.router)
-app.include_router(sessions.router)
 app.include_router(sports.router)
-
+app.include_router(sessions.router)
+app.include_router(locations.router)
+app.include_router(chat_messages.router)
+app.include_router(websockets.router)
 
 @app.get("/")
 async def root():
-    return {"message": "Welcome to Pickup at Brown API"}
+    return {"message": "Welcome to Pickup@Brown API"}

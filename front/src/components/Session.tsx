@@ -1,48 +1,68 @@
-import styles from './session.module.css'; // Import the CSS module for styling
+import React from "react";
+import styles from "./session.module.css";
+import { FiClock, FiUser } from "react-icons/fi";
 
-// Define the shape of the session data being passed to the component
 interface SessionProps {
-  session: {
-    id: number;
-    title: string;
-    description: string;
-    datetime: string;
-    location: {
-      id: number;
-      name: string;
-    };
-    creator: {
-      id: number;
-      username: string; // Assuming the creator has a 'username' property
-    } | null;  // 'creator' can be null if no creator is associated
-    max_participants: number;
-    current_participants: number;
-  };
+  id: number;
+  title: string;
+  description?: string;
+  datetime: string;
+  creator: { id: number; username: string } | null;
+  sport: { id: number; name: string };
+  location: { id: number; name: string };
+  max_participants: number;
+  current_participants: number;
+  onJoin?: () => void;
+  onLeave?: () => void;
+  isParticipant?: boolean;
 }
 
-const Session = ({ session }: SessionProps) => {
-  const { title, description, datetime, location, creator, max_participants, current_participants } = session;
+const Session: React.FC<SessionProps> = ({
+  title,
+  datetime,
+  creator,
+  sport,
+}) => {
+  const formatDateTime = (dateString: string) => {
+    const date = new Date(dateString);
+    
+    // Format date
+    const dateFormatted = date.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric'
+    });
 
-  // Format the session's datetime (optional: use a library like `moment.js` or `date-fns` for better formatting)
-  const formattedDate = new Date(datetime).toLocaleString();
+    // Format time
+    const timeFormatted = date.toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+
+    return (
+      <div className={styles.datetime}>
+        <span className={styles.date}>{dateFormatted}</span>
+        <span className={styles.time}>{timeFormatted}</span>
+      </div>
+    );
+  };
 
   return (
-    <div className={styles.sessionItem}>
-      <h3>{title}</h3>
-      <p>{description}</p>
-      <p><strong>Date:</strong> {formattedDate}</p>
-      <p><strong>Location:</strong> {location.name}</p>
+    <div className={styles.sessionCard}>
+      <div className={styles.header}>
+        <h3 className={styles.title}>{title}</h3>
+        <span className={styles.sportBadge}>{sport.name}</span>
+      </div>
 
-      {/* Check if the creator exists and display it */}
-      {creator ? (
-        <p><strong>Creator:</strong> {creator.username}</p> // Display creator's username
-      ) : (
-        <p><strong>Creator:</strong> Unknown</p> // Handle cases where there is no creator
-      )}
-
-      <p>
-        <strong>Participants:</strong> {current_participants} / {max_participants}
-      </p>
+      <div className={styles.details}>
+        <div className={styles.detail}>
+          <FiClock className={styles.icon} />
+          {formatDateTime(datetime)}
+        </div>
+        <div className={styles.detail}>
+          <FiUser className={styles.icon} />
+          <span>{creator?.username || 'Unknown'}</span>
+        </div>
+      </div>
     </div>
   );
 };
