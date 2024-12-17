@@ -1,172 +1,81 @@
-/* User Profile CSS */
+/* Profile Image Styling */
 .img-radius {
     border-radius: 50%;
     width: 100px;
     height: 100px;
     object-fit: cover;
     border: 3px solid #fff;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-.container {
-    margin: 0 auto;
-    padding: 20px;
-    max-width: 1200px;
-}
-
-#user-profile .main-box {
-    background: #fff;
-    border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* General Layout */
+  .container {
+    margin: 0 auto;
+    padding: 10px;
+    max-width: 1200px;
+    overflow: auto;
+    /* border: 2px solid #ccc; Add a border (2px solid grey) around the container */
+
+  }
+  
+  /* User Profile Box Styling */
+  #user-profile .main-box {
+    background: #ffffff;
+    border-radius: 8px;
+    /* box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); */
     padding: 20px;
     margin-bottom: 20px;
+    overflow-y: auto; /* Allow vertical scrolling */
+    max-height: calc(0.8 * (100vh - 60px));
 }
-
-.main-box h2 {
+  
+  /* Header Styling */
+  .main-box h2 {
     font-size: 24px;
     font-weight: bold;
-    margin-bottom: 10px;
-}
-
-.profile-status {
-    color: green;
-    margin-bottom: 15px;
-}
-
-.profile-img {
-    border-radius: 50%;
-    width: 150px;
-    height: 150px;
-}
-
-.profile-label {
+    overflow-y: auto;
+    max-height: calc(100vh - 60px); /* Adjust based on header height */
+  }
+  
+  .profile-label {
     margin: 10px 0;
-}
-
-.profile-label .label {
-    padding: 5px 10px;
-    font-size: 14px;
-}
-
-.profile-stars {
-    color: gold;
-    margin-bottom: 15px;
-}
-
-.profile-since {
-    font-size: 14px;
-    color: #666;
-    margin-bottom: 15px;
-}
-
-.profile-details ul {
-    list-style: none;
-    padding: 0;
-}
-
-.profile-details ul li {
+  }
+  
+  .profile-details h6 {
     margin-bottom: 10px;
-}
-
-.profile-message-btn a {
-    text-decoration: none;
-    padding: 10px 20px;
-    color: white;
-    background-color: green;
-    border-radius: 5px;
-}
-
-.profile-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.profile-header h3 {
-    font-size: 20px;
-    font-weight: bold;
-}
-
-.edit-profile {
-    background: #007bff;
-    color: white;
-    padding: 10px 15px;
-    border-radius: 5px;
-    text-decoration: none;
-}
-
-.profile-user-info {
+  }
+  
+  .profile-details p {
+    color: #555;
+  }
+  
+  /* Tabs and Navigation Styling */
+  .tabs-wrapper {
     margin-top: 20px;
-}
-
-.profile-user-details {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 10px;
-}
-
-.profile-social ul {
-    list-style: none;
-    padding: 0;
-}
-
-.profile-social ul li {
-    margin-bottom: 10px;
-}
-
-.tabs-wrapper {
-    margin-top: 20px;
-}
-
-.nav-tabs {
+  }
+  
+  .nav-tabs {
     border-bottom: 2px solid #ddd;
     gap: 2rem;
-}
-.nav-tabs a {
-    font-size: 24px; /* Adjust the size as needed */
-}
-.nav-tabs .active a {
+  }
+  
+  .nav-tabs a {
+    font-size: 24px;
+  }
+  
+  .nav-tabs .active a {
     color: #007bff;
     font-weight: bold;
-}
-
-.widget-users {
-    display: flex;
-    flex-wrap: wrap;
-}
-
-.widget-users li {
-    background: #f9f9f9;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 15px;
-    margin: 10px;
-    text-align: center;
-}
-
-.widget-users .img {
-    margin-bottom: 10px;
-}
-
-.widget-users .details .name a {
-    text-decoration: none;
-    font-weight: bold;
-    color: #333;
-}
-
-.widget-users .details .time {
-    font-size: 12px;
-    color: #999;
-}
-
-.widget-users .details .type .label {
-    padding: 3px 6px;
-    font-size: 12px;
-}
-
-
-/* Add this to profilepage.css */
-.loading {
+  }
+  
+  /* Error Message */
+  .alert-danger {
+    color: red;
+    margin-top: 20px;
+  }
+  
+  /* Loading State */
+  .loading {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -174,5 +83,64 @@
     font-size: 1.5rem;
     color: #333;
     font-weight: bold;
+  }
+  
+  /* Sports Preferences Styling */
+  .sports-list .sport-item {
+    font-size: 16px;
+    margin-bottom: 5px;
+  }
+  
+  .sports-list .skill-level {
+    color: #777;
+    font-size: 14px;
+  }
+  
+  /* General Tab Content Styling */
+  .tab-content {
+    margin-top: 20px;
+  }
+  
+  /* Tab Box Styling */
+  .main-box {
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  
+  /* Friends and Past Sessions Widgets */
+  .widget-users {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .widget-users li {
+    background: #f9f9f9;
+    /* border: 1px solid #ddd; */
+    /* border-radius: 8px; */
+    padding: 15px;
+    margin: 10px;
+    text-align: center;
+  }
+  
+  .widget-users .img {
+    margin-bottom: 10px;
+  }
+  
+  .widget-users .details .name a {
+    text-decoration: none;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .widget-users .details .time {
+    font-size: 12px;
+    color: #999;
+  }
+  
+  .widget-users .details .type .label {
+    padding: 3px 6px;
+    font-size: 12px;
   }
   
