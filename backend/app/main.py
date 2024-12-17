@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.routers import users, sports, sessions, locations, chat_messages, websockets
+from fastapi.testclient import TestClient
 
 app = FastAPI()
 
@@ -12,6 +13,8 @@ app.add_middleware(
     allow_methods=["*"],  # Allows all methods
     allow_headers=["*"],  # Allows all headers
 )
+
+testclient = TestClient(app)
 
 # Include routers
 app.include_router(users.router)
