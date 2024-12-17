@@ -3,3 +3,7 @@
   width: 100%;
   min-height: 100vh;
 }
+
+#root {
+  padding-top: 5.5rem;
+}

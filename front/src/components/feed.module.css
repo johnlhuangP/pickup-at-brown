@@ -3,6 +3,8 @@
     display: flex;
     height: calc(100vh - 64px);
     background-color: white;
+    padding-bottom: 5px;
+    padding-top: 5px;
 }
 
 .sessionsPanel {
