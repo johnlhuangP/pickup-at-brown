@@ -5,6 +5,7 @@ from app.crud import session as session_crud
 from app.schemas.session import SessionCreate, SessionResponse, SessionUpdate
 from typing import List
 from app.core.auth_router import AuthRouter
+from fastapi import HTTPException
 
 router = AuthRouter(
     prefix="/sessions",

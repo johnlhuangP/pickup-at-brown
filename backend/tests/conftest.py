@@ -1,21 +1,15 @@
 import pytest
+from datetime import datetime, timedelta
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
-from datetime import datetime, timedelta
 
 from app.main import app
 from app.database import Base, get_db
-from app.models.user import User
-from app.models.sport import Sport
-from app.models.location import Location
-from app.models.session import Session
-from app.models.sport_preference import SportPreference
 
-# Create test database
+# Test database setup
 SQLALCHEMY_TEST_DATABASE_URL = "sqlite:///:memory:"
-
 engine = create_engine(
     SQLALCHEMY_TEST_DATABASE_URL,
     connect_args={"check_same_thread": False},
@@ -30,6 +24,7 @@ def db():
     try:
         yield db
     finally:
+        db.rollback()
         db.close()
         Base.metadata.drop_all(bind=engine)
 
@@ -42,95 +37,107 @@ def client(db):
             db.close()
     
     app.dependency_overrides[get_db] = override_get_db
-    
     with TestClient(app) as test_client:
         yield test_client
 
 @pytest.fixture
-def test_user(db):
-    user = User(
-        username="testuser",
-        email="test@example.com",
-        supabase_id="test123",
-        first_name="Test",
-        last_name="User"
-    )
-    db.add(user)
-    db.commit()
-    db.refresh(user)
-    return user
+def test_user(client):
+    user_data = {
+        "username": "testuser",
+        "email": "test@example.com",
+        "supabase_id": "test123",
+        "first_name": "Test",
+        "last_name": "User",
+        "sport_preferences": []
+    }
+    response = client.post("/users/", json=user_data)
+    assert response.status_code == 200
+    return response.json()
 
 @pytest.fixture
-def test_user2(db):
-    user = User(
-        username="testuser2",
-        email="test2@example.com",
-        supabase_id="test456",
-        first_name="Test2",
-        last_name="User2"
-    )
-    db.add(user)
-    db.commit()
-    db.refresh(user)
-    return user
+def test_user2(client):
+    user_data = {
+        "username": "testuser2",
+        "email": "test2@example.com",
+        "supabase_id": "test456",
+        "first_name": "Test2",
+        "last_name": "User2",
+        "sport_preferences": []
+    }
+    response = client.post("/users/", json=user_data)
+    assert response.status_code == 200
+    return response.json()
 
 @pytest.fixture
-def test_sport(db):
-    sport = Sport(name="Basketball")
-    db.add(sport)
-    db.commit()
-    db.refresh(sport)
-    return sport
+def test_user3(client):
+    user_data = {
+        "username": "testuser3",
+        "email": "test3@example.com",
+        "supabase_id": "test789",
+        "first_name": "Test3",
+        "last_name": "User3",
+        "sport_preferences": []
+    }
+    response = client.post("/users/", json=user_data)
+    assert response.status_code == 200
+    return response.json()
 
 @pytest.fixture
-def test_location(db):
-    location = Location(name="OMAC CT1")
-    db.add(location)
-    db.commit()
-    db.refresh(location)
-    return location
+def test_sport(client):
+    response = client.post("/sports/?sport_name=Test Sport")
+    assert response.status_code == 200
+    return response.json()
 
 @pytest.fixture
-def test_sport_preference(db, test_user, test_sport):
-    preference = SportPreference(
-        user_id=test_user.id,
-        sport_id=test_sport.id,
-        skill_level="intermediate",
-        notification_enabled=True
-    )
-    db.add(preference)
-    db.commit()
-    db.refresh(preference)
-    return preference
+def test_location(client):
+    location_data = {
+        "name": "Test Location",
+    }
+    response = client.post("/locations/", json=location_data)
+    assert response.status_code == 200
+    return response.json()
 
 @pytest.fixture
-def test_session(db, test_user, test_sport, test_location):
-    session = Session(
-        title="Test Session",
-        description="Test Description",
-        datetime=datetime.now() + timedelta(days=1),
-        sport_id=test_sport.id,
-        location_id=test_location.id,
-        creator_id=test_user.id,
-        max_participants=4
-    )
-    db.add(session)
-    db.commit()
-    db.refresh(session)
-    return session
+def test_session(client, test_user, test_sport, test_location):
+    session_data = {
+        "title": "Test Session",
+        "description": "Test Description",
+        "datetime": (datetime.now() + timedelta(days=1)).isoformat(),
+        "sport_id": test_sport["id"],
+        "location_id": test_location["id"],
+        "max_participants": 4
+    }
+    response = client.post(f"/sessions/?creator_id={test_user['id']}", json=session_data)
+    assert response.status_code == 200
+    return response.json()
 
 @pytest.fixture
-def test_full_session(db, test_user, test_sport, test_location):
-    session = Session(
-        title="Full Session",
-        description="No spots left",
-        datetime=datetime.now() + timedelta(days=1),
-        sport_id=test_sport.id,
-        location_id=test_location.id,
-        creator_id=test_user.id,
-        max_participants=2
-    )
-    db.add(session)
-    db.commit()
-    db.refresh(session)
-    return session
+def test_full_session(client, test_user, test_sport, test_location):
+    session_data = {
+        "title": "Full Session",
+        "description": "Test Description",
+        "datetime": (datetime.now() + timedelta(days=1)).isoformat(),
+        "sport_id": test_sport["id"],
+        "location_id": test_location["id"],
+        "max_participants": 1  # Only creator can join
+    }
+    response = client.post(f"/sessions/?creator_id={test_user['id']}", json=session_data)
+    assert response.status_code == 200
+    return response.json()
+
+@pytest.fixture
+def test_multiple_sessions(client, test_user, test_sport, test_location):
+    sessions = []
+    for i in range(3):
+        session_data = {
+            "title": f"Test Session {i}",
+            "description": f"Test Description {i}",
+            "datetime": (datetime.now() + timedelta(days=i+1)).isoformat(),
+            "sport_id": test_sport["id"],
+            "location_id": test_location["id"],
+            "max_participants": 4
+        }
+        response = client.post(f"/sessions/?creator_id={test_user['id']}", json=session_data)
+        assert response.status_code == 200
+        sessions.append(response.json())
+    return sessions

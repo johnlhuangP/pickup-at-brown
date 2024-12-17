@@ -11,3 +11,9 @@ class LocationResponse(LocationBase):
 
     class Config:
         from_attributes = True
+
+class LocationUpdate(LocationBase):
+    id: int
+
+    class Config:
+        from_attributes = True
