@@ -9,7 +9,6 @@ class UserBasic(BaseModel):
     email: str
     first_name: str
     last_name: str
-    skill_level: str
 
     class Config:
         from_attributes = True
@@ -22,12 +21,14 @@ class FriendshipCreate(FriendshipBase):
     pass
 
 class FriendshipUpdate(FriendshipBase):
-    name: Optional[str] = None
+    status: str
 
 class FriendshipResponse(FriendshipBase):
     id: int
     user: Optional[UserBasic] = None
     friend: Optional[UserBasic] = None
+
+    status: str
 
     class Config:
         from_attributes = True  # Allows ORM model conversion

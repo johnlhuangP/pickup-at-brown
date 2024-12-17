@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.routers import users, sports, sessions, locations, chat_messages, websockets
 from fastapi.testclient import TestClient
+from app.routers import users, sports, sessions, locations, chat_messages, websockets, friends
 
 app = FastAPI()
 
@@ -23,6 +24,7 @@ app.include_router(sessions.router)
 app.include_router(locations.router)
 app.include_router(chat_messages.router)
 app.include_router(websockets.router)
+app.include_router(friends.router)
 
 @app.get("/")
 async def root():

@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session as SQLAlchemySession, joinedload
+from fastapi import HTTPException
 from app.models.session import Session
 from app.models.session_participant import SessionParticipant, ParticipantStatus
 from app.schemas.session import SessionCreate, SessionUpdate
@@ -38,6 +39,15 @@ def create_session(db: SQLAlchemySession, session: SessionCreate, creator_id: in
     db.add(db_session)
     db.commit()
     db.refresh(db_session)
+
+    # Automatically add creator as a participant
+    participant = SessionParticipant(
+        session_id=db_session.id,
+        user_id=creator_id,
+        status=ParticipantStatus.CONFIRMED
+    )
+    db.add(participant)
+    db.commit()
     
     # Reload the session with all relationships
     return get_session(db, db_session.id)
@@ -68,8 +78,11 @@ def join_session(db: SQLAlchemySession, session_id: int, user_id: int):
     # Check if session exists and has space
     session = get_session(db, session_id)
     if not session:
-        return False
+        raise HTTPException(status_code=404, detail="Session not found")
         
+    if session.max_participants <= session.current_participants:
+        raise HTTPException(status_code=400, detail="Session is full")
+    
     # Check if user is already in session
     existing = db.query(SessionParticipant).filter(
         SessionParticipant.session_id == session_id,
@@ -77,7 +90,7 @@ def join_session(db: SQLAlchemySession, session_id: int, user_id: int):
     ).first()
     
     if existing:
-        return False
+        raise HTTPException(status_code=400, detail="User already in session")
         
     participant = SessionParticipant(
         session_id=session_id,
@@ -95,11 +108,16 @@ def leave_session(db: SQLAlchemySession, session_id: int, user_id: int):
     ).first()
     
     if not participant:
-        return False
+        raise HTTPException(status_code=400, detail="User is not a participant")
+    
+    # Get the session to check if user is creator
+    db_session = get_session(db, session_id)
+    if participant.user_id == db_session.creator_id:
+        raise HTTPException(status_code=400, detail="Creator cannot leave")
         
     db.delete(participant)
     db.commit()
-    return True 
+    return True
 
 def get_session_history(db: SQLAlchemySession, creator_id: int):
     return db.query(Session)\

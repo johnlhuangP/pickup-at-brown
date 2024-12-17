@@ -1,0 +1,31 @@
+/* Disable scrolling globally for the entire page */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;  /* Ensure the page takes up full viewport */
+  overflow: hidden;  /* Disable scrolling for the entire page */
+}
+
+/* HomePage container */
+.homePage {
+  display: flex;
+  min-height: 100vh; /* Ensure the homepage takes up the full height */
+  overflow: hidden; /* Prevent scrolling on the homepage */
+}
+
+/* Content section for Feed */
+.content {
+  flex-grow: 1;
+  margin-left: 230px; /* Adjust based on sidebar width */
+  padding: 10px;
+  text-align: center;
+  padding-top: 0; /* Offset for the height of the Navbar */
+  height: 100vh; /* Ensure it fits the viewport height */
+  overflow: auto; /* Allow scrolling within the content */
+}
+
+/* Example for a nested object within content that you want to scroll */
+.nestedObject {
+  max-height: 300px;  /* Set a max height for the scrollable object */
+  overflow: auto;  /* Enable scrolling for this specific object */
+}

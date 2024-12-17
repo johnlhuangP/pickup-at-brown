@@ -68,7 +68,7 @@ const Feed = ({ selectedSport }: FeedProps) => {
   useEffect(() => {
     const fetchUserData = async () => {
       if (!user?.id) return;
-      
+
       try {
         const response = await fetch(`${API_BASE_URL}/users/supabase/${user.id}`);
         if (!response.ok) throw new Error('Failed to fetch user data');
@@ -76,7 +76,7 @@ const Feed = ({ selectedSport }: FeedProps) => {
         setUserData(data);
       } catch (err) {
         console.error("Error fetching user data:", err);
-        setError("Failed to fetch user data");
+        setError((err as Error).message);
       }
     };
 
@@ -89,7 +89,8 @@ const Feed = ({ selectedSport }: FeedProps) => {
         `${API_BASE_URL}/sessions/${sessionId}/participants`
       );
       if (!participantsResponse.ok) throw new Error('Failed to fetch participants');
-      return await participantsResponse.json();
+      const participants = await participantsResponse.json();
+      return participants as Array<{ id: number; username: string }>;
     } catch (error) {
       console.error(`Error fetching participants for session ${sessionId}:`, error);
       return [];
@@ -101,7 +102,7 @@ const Feed = ({ selectedSport }: FeedProps) => {
     try {
       const response = await fetch(`${API_BASE_URL}/sessions/`);
       if (!response.ok) throw new Error('Failed to fetch sessions');
-      const sessions = await response.json();
+      const sessions = (await response.json()) as SessionData[];
 
       // Fetch participants for each session
       const sessionsWithParticipants = await Promise.all(
@@ -109,13 +110,13 @@ const Feed = ({ selectedSport }: FeedProps) => {
           const participants = await fetchSessionParticipants(session.id);
           return {
             ...session,
-            participants
+            participants,
           };
         })
       );
 
       setAllSessions(sessionsWithParticipants);
-      
+
       // Update selected session if it exists
       if (selectedSession) {
         const updatedSelectedSession = sessionsWithParticipants.find(
@@ -127,7 +128,7 @@ const Feed = ({ selectedSport }: FeedProps) => {
       }
     } catch (err) {
       console.error("Fetch error:", err);
-      setError(err.message);
+      setError((err as Error).message);
     } finally {
       setLoading(false);
     }
@@ -148,7 +149,7 @@ const Feed = ({ selectedSport }: FeedProps) => {
 
   const handleSessionClick = (session: SessionData) => {
     setSelectedSession(session);
-    setIsCreating(false);  // Close create form when selecting a session
+    setIsCreating(false); // Close create form when selecting a session
   };
 
   const handleCloseSidebar = () => {
@@ -160,24 +161,26 @@ const Feed = ({ selectedSport }: FeedProps) => {
     setSuccessMessage('Session created successfully!');
     await fetchSessions();
     setSelectedSession(sessionData);
-    
+
     setTimeout(() => {
       setSuccessMessage(null);
     }, 3000);
   };
 
   const handleParticipantUpdate = async (sessionId: number, isJoining: boolean) => {
-    setAllSessions(prevSessions => 
+    setAllSessions(prevSessions =>
       prevSessions.map(session => {
         if (session.id === sessionId) {
           return {
             ...session,
-            current_participants: isJoining 
-              ? session.current_participants + 1 
+            current_participants: isJoining
+              ? session.current_participants + 1
               : session.current_participants - 1,
-            participants: isJoining 
-              ? [...(session.participants || []), userData?.id]
-              : (session.participants || []).filter(id => id !== userData?.id)
+            participants: isJoining
+              ? [...(session.participants || []), { id: userData!.id, username: userData!.username }]
+              : (session.participants || []).filter(
+                  participant => participant.id !== userData!.id
+                ),
           };
         }
         return session;
@@ -197,16 +200,44 @@ const Feed = ({ selectedSport }: FeedProps) => {
     return <div className={styles.error}>{error}</div>;
   }
 
-  if (filteredSessions.length === 0) {
-    return <div>No sessions available for {selectedSport}</div>;
-  }
+  // Check if there are no sessions and ensure the button is still visible
+if (filteredSessions.length === 0) {
+  return (
+    <div className={styles.feed}>
+      <div className={styles.sessionsPanel}>
+        <div className={styles.feedHeader}>
+          <h2 className={styles.feedTitle}>No Available Sessions</h2>
+          <button
+            className={styles.newSessionButton}
+            onClick={() => setIsCreating(true)}
+          >
+            + New Session
+          </button>
+        </div>
+      </div>
+
+      {isCreating ? (
+        <SessionForm
+          onClose={() => setIsCreating(false)}
+          onSubmit={handleSessionCreated}
+          userData={userData}
+        />
+      ) : (
+        <div className={styles.noSessionsMessage}>
+          No sessions available. You can create one!
+        </div>
+      )}
+    </div>
+  );
+}
+
 
   return (
     <div className={styles.feed}>
       <div className={styles.sessionsPanel}>
         <div className={styles.feedHeader}>
           <h2 className={styles.feedTitle}>Available Sessions</h2>
-          <button 
+          <button
             className={styles.newSessionButton}
             onClick={() => setIsCreating(true)}
           >
@@ -227,27 +258,27 @@ const Feed = ({ selectedSport }: FeedProps) => {
               }`}
               onClick={() => handleSessionClick(session)}
             >
-              <Session
-                {...session}
-              />
+              <Session {...session} />
             </div>
           ))}
         </div>
       </div>
 
       {isCreating ? (
-        <SessionForm 
+        <SessionForm
           onClose={() => setIsCreating(false)}
           onSubmit={handleSessionCreated}
           userData={userData}
         />
-      ) : selectedSession && (
-        <SessionSidebar
-          selectedSession={selectedSession}
-          onClose={handleCloseSidebar}
-          currentUser={userData}
-          onParticipantUpdate={(isJoining) => handleParticipantUpdate(selectedSession.id, isJoining)}
-        />
+      ) : (
+        selectedSession && (
+          <SessionSidebar
+            selectedSession={selectedSession}
+            onClose={handleCloseSidebar}
+            currentUser={userData}
+            onParticipantUpdate={(isJoining) => handleParticipantUpdate(selectedSession.id, isJoining)}
+          />
+        )
       )}
     </div>
   );
