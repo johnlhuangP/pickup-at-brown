@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
-import { CSidebar, CSidebarHeader, CSidebarBrand, CNavTitle, CNavItem, CBadge, CSidebarNav } from "@coreui/react";
-import styles from './sidebar.module.css';
+import styles from './sidebar.module.css'; // Import the custom CSS
 import { API_BASE_URL } from '../config';
 
 interface Sport {
@@ -16,6 +15,7 @@ interface SidebarProps {
 const Sidebar = ({ onSportSelect, selectedSport }: SidebarProps) => {
   const [sports, setSports] = useState<Sport[]>([]);
 
+  // Fetch sports data
   useEffect(() => {
     const fetchSports = async () => {
       try {
@@ -37,31 +37,35 @@ const Sidebar = ({ onSportSelect, selectedSport }: SidebarProps) => {
   };
 
   return (
-    <CSidebar className={`border-end ${styles.sidebar}`} colorScheme="dark">
-      <CSidebarHeader className="border-bottom">
-        <CSidebarBrand>Search</CSidebarBrand>
-      </CSidebarHeader>
-      <CSidebarNav>
-        <CNavTitle>Sports</CNavTitle>
-        <CNavItem
-          href="/"
-          onClick={(event) => handleSportSelect('All Upcoming', event)}
-          className={selectedSport === 'All Upcoming' ? styles.selectedSport : ''}
-        >
-          All Upcoming
-        </CNavItem>
-        {sports.map(sport => (
-          <CNavItem
-            key={sport.id}
-            href="/"
-            onClick={(event) => handleSportSelect(sport.name, event)}
-            className={selectedSport === sport.name ? styles.selectedSport : ''}
-          >
-            {sport.name}
-          </CNavItem>
-        ))}
-      </CSidebarNav>
-    </CSidebar>
+    <div className={styles.sidebar}>
+      <div className={styles.sidebarHeader}>
+        <div className={styles.sidebarBrand}>Sessions</div>
+      </div>
+      <div className={styles.sidebarNav}>
+        <ul>
+          <li>
+            <a
+              href="/"
+              onClick={(event) => handleSportSelect('All Upcoming', event)}
+              className={selectedSport === 'All Upcoming' ? styles.selectedSport : ''}
+            >
+              All Upcoming
+            </a>
+          </li>
+          {sports.map(sport => (
+            <li key={sport.id}>
+              <a
+                href="/"
+                onClick={(event) => handleSportSelect(sport.name, event)}
+                className={selectedSport === sport.name ? styles.selectedSport : ''}
+              >
+                {sport.name}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
   );
 };
 

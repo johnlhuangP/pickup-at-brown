@@ -9,6 +9,7 @@
   background: white;
   z-index: 1000;
   border-bottom: 1px solid #e2e8f0;
+  height: 60px; /* Define the height of the header */
 }
 
 .navbar {

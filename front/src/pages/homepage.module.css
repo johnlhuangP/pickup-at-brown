@@ -1,0 +1,18 @@
+/* homepage.module.css */
+
+/* HomePage container */
+.homePage {
+    display: flex;
+    min-height: 100vh;
+  }
+  
+  /* Content section for Feed */
+  .content {
+    flex-grow: 1;
+    margin-left: 230px; /* Adjust based on sidebar width */
+    padding: 10px;
+    text-align: center;
+    padding-top: 0; /* Offset for the height of the Navbar */
+    overflow-y: auto; /* Ensure scrolling if content is long */
+  }
+  

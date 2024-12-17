@@ -163,3 +163,16 @@
     padding: 3px 6px;
     font-size: 12px;
 }
+
+
+/* Add this to profilepage.css */
+.loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.5rem;
+    color: #333;
+    font-weight: bold;
+  }
+  

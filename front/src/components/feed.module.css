@@ -3,6 +3,8 @@
     display: flex;
     height: calc(100vh - 64px); /* Adjust based on your header height */
     overflow: hidden;
+    padding-left: 20px; /* Add padding on the left */
+
 }
 
 .sessionsPanel {

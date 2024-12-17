@@ -7,7 +7,7 @@ interface SessionDetailProps {
   sessionId: number;
   isParticipant: boolean;
   currentUserId: number;
-  session: any;
+   session: any;
   onClose: () => void;
   onJoin?: () => void;
   onLeave?: () => void;
@@ -18,7 +18,6 @@ const SessionDetail: React.FC<SessionDetailProps> = ({
   isParticipant,
   currentUserId,
   session,
-  onClose,
   onJoin,
   onLeave,
 }) => {
