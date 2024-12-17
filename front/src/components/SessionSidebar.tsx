@@ -49,7 +49,7 @@ const SessionSidebar: React.FC<SessionSidebarProps> = ({
       setError("You must be logged in to join a session");
       return;
     }
-
+  
     try {
       const response = await fetch(
         `${API_BASE_URL}/sessions/${selectedSession.id}/join?user_id=${currentUser.id}`,
@@ -60,27 +60,31 @@ const SessionSidebar: React.FC<SessionSidebarProps> = ({
           },
         }
       );
-
+  
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.detail || "Failed to join session");
       }
-
+  
       setIsParticipant(true);
       setError(null);
       onParticipantUpdate(true);
     } catch (error) {
-      console.error("Error joining session:", error);
-      setError(error.message || "Failed to join session");
+      // TypeScript error fix: Check if the error is an instance of Error
+      if (error instanceof Error) {
+        setError(error.message || "Failed to join session");
+      } else {
+        setError("Failed to join session");
+      }
     }
   };
-
+  
   const handleLeave = async () => {
     if (!user || !currentUser) {
       setError("You must be logged in to leave a session");
       return;
     }
-
+  
     try {
       const response = await fetch(
         `${API_BASE_URL}/sessions/${selectedSession.id}/leave?user_id=${currentUser.id}`,
@@ -91,20 +95,25 @@ const SessionSidebar: React.FC<SessionSidebarProps> = ({
           },
         }
       );
-
+  
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.detail || "Failed to leave session");
       }
-
+  
       setIsParticipant(false);
       setError(null);
       onParticipantUpdate(false);
     } catch (error) {
-      console.error("Error leaving session:", error);
-      setError(error.message || "Failed to leave session");
+      // TypeScript error fix: Check if the error is an instance of Error
+      if (error instanceof Error) {
+        setError(error.message || "Failed to leave session");
+      } else {
+        setError("Failed to leave session");
+      }
     }
   };
+  
 
   if (!user || !currentUser) {
     return (

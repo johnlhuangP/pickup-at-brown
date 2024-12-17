@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { useUser } from '@clerk/clerk-react';
 import  pfp_img  from '../assets/solid_color.png'
 
 interface friendData {
