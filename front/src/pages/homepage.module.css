@@ -29,3 +29,10 @@ html, body {
   max-height: 300px;  /* Set a max height for the scrollable object */
   overflow: auto;  /* Enable scrolling for this specific object */
 }
+
+
+@media (max-width: 768px) {
+  .content {
+    margin-left: 180px; /* Adjust based on sidebar width */
+  }
+}
