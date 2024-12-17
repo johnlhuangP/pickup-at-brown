@@ -42,7 +42,7 @@ async def websocket_endpoint(
                     "id": db_message.id,
                     "content": db_message.content,
                     "sender_id": user_id,
-                    "sender_username": user.username,
+                    "sender_username": user.full_name or user.username,
                     "timestamp": db_message.timestamp.isoformat(),
                     "session_id": session_id
                 }

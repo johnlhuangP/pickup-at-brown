@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from datetime import datetime
 from typing import Optional
 
@@ -12,6 +12,7 @@ class ChatMessageCreate(ChatMessageBase):
 class ChatMessageResponse(ChatMessageBase):
     id: int
     sender_id: int
+    sender_username: str = Field(description="The sender's full name, or username if full name is not available")
     timestamp: datetime
 
     class Config:

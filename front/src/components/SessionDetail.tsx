@@ -7,7 +7,7 @@ interface SessionDetailProps {
   sessionId: number;
   isParticipant: boolean;
   currentUserId: number;
-   session: any;
+  session: any;
   onClose: () => void;
   onJoin?: () => void;
   onLeave?: () => void;
@@ -36,6 +36,7 @@ const SessionDetail: React.FC<SessionDetailProps> = ({
         );
         if (!response.ok) throw new Error("Failed to fetch messages");
         const data = await response.json();
+        console.log("Fetched messages:", data);
         setMessages(data);
       } catch (error) {
         console.error("Error fetching messages:", error);
@@ -51,8 +52,7 @@ const SessionDetail: React.FC<SessionDetailProps> = ({
     if (message.trim() && connected && isParticipant) {
       sendMessage(message);
       setMessage("");
-      // Only scroll to bottom when sending a new message
-      scrollToBottom();
+      // Remove auto-scroll
     }
   };
 
@@ -89,8 +89,25 @@ const SessionDetail: React.FC<SessionDetailProps> = ({
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  console.log("isParticipant", isParticipant);
-  console.log("currentUserId", currentUserId);
+  const formatMessageDate = (date: Date) => {
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    if (date.toDateString() === today.toDateString()) {
+      return "Today";
+    } else if (date.toDateString() === yesterday.toDateString()) {
+      return "Yesterday";
+    } else {
+      return date.toLocaleDateString("en-US", {
+        month: "long",
+        day: "numeric",
+        year:
+          date.getFullYear() !== today.getFullYear() ? "numeric" : undefined,
+      });
+    }
+  };
+
   return (
     <div className={styles.detailContainer}>
       {/* Session Info Section */}
@@ -133,7 +150,7 @@ const SessionDetail: React.FC<SessionDetailProps> = ({
           </div>
           <div className={styles.infoItem}>
             <span className={styles.label}>Host</span>
-            <span>{session.creator.username}</span>
+            <span>{session.creator.full_name || session.creator.username}</span>
           </div>
           {session.description && (
             <div className={styles.description}>
@@ -152,26 +169,58 @@ const SessionDetail: React.FC<SessionDetailProps> = ({
           ) : messages.length === 0 ? (
             <div className={styles.noMessages}>No messages yet</div>
           ) : (
-            messages.map((msg) => (
-              <div
-                key={msg.id}
-                className={`${styles.message} ${
-                  msg.sender_id === Number(currentUserId)
-                    ? styles.myMessage
-                    : styles.otherMessage
-                }`}
-              >
-                <div className={styles.messageHeader}>
-                  <span className={styles.senderName}>
-                    {msg.sender_username}
-                  </span>
-                  <span className={styles.timestamp}>
-                    {new Date(msg.timestamp).toLocaleTimeString()}
-                  </span>
-                </div>
-                <div className={styles.messageContent}>{msg.content}</div>
-              </div>
-            ))
+            <>
+              {messages.reduce((acc: JSX.Element[], msg, index) => {
+                const messageDate = new Date(msg.timestamp);
+                const prevMessage = index > 0 ? messages[index - 1] : null;
+                const prevDate = prevMessage
+                  ? new Date(prevMessage.timestamp)
+                  : null;
+                console.log(msg.sender_username, currentUserId);
+                // Add date separator if it's a new day
+                if (
+                  !prevDate ||
+                  messageDate.toDateString() !== prevDate.toDateString()
+                ) {
+                  acc.push(
+                    <div
+                      key={`date-${msg.id}`}
+                      className={styles.dateSeparator}
+                    >
+                      {formatMessageDate(messageDate)}
+                    </div>
+                  );
+                }
+
+                // Add message
+                acc.push(
+                  <div
+                    key={msg.id}
+                    className={`${styles.message} ${
+                      msg.sender_id === Number(currentUserId)
+                        ? styles.myMessage
+                        : styles.otherMessage
+                    }`}
+                  >
+                    <div className={styles.messageHeader}>
+                      <span className={styles.senderName}>
+                        {msg.sender_id !== Number(currentUserId) &&
+                          msg.sender_username}
+                      </span>
+                      <span className={styles.timestamp}>
+                        {messageDate.toLocaleTimeString([], {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </span>
+                    </div>
+                    <div className={styles.messageContent}>{msg.content}</div>
+                  </div>
+                );
+
+                return acc;
+              }, [])}
+            </>
           )}
           <div ref={messagesEndRef} />
         </div>
