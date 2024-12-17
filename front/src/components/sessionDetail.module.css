@@ -1,6 +1,6 @@
 .detailContainer {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   height: 100%;
   background: #1c1c1e;
   border-radius: 8px;
@@ -8,9 +8,11 @@
 }
 
 .sessionInfo {
-  padding: 10px;
-  border-bottom: 1px solid #2c2c2e;
+  width: 300px;
+  padding: 20px;
+  border-right: 1px solid #2c2c2e;
   background: #2c2c2e;
+  overflow-y: auto;
 }
 
 .sessionInfo h3 {
@@ -21,15 +23,22 @@
 }
 
 .infoGrid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 16px;
 }
 
 .infoItem {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.infoItem:last-child {
+  border-bottom: none;
 }
 
 .label {
@@ -39,14 +48,16 @@
 }
 
 .description {
-  grid-column: 1 / -1;
   margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .description p {
   margin-top: 4px;
   color: #e1e1e1;
   line-height: 1.5;
+  font-size: 0.9rem;
 }
 
 .chatSection {
@@ -54,7 +65,9 @@
   display: flex;
   flex-direction: column;
   background: #1c1c1e;
-  min-height: 400px;
+  min-height: 100%;
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
 }
 
 .messages {
@@ -67,26 +80,69 @@
   margin-bottom: 0;
 }
 
+.dateSeparator {
+  text-align: center;
+  margin: 24px 0;
+  position: relative;
+  z-index: 1;
+}
+
+.dateSeparator::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  z-index: -1;
+}
+
+.dateSeparator span {
+  background: #1c1c1e;
+  padding: 0 12px;
+  color: #86868b;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
 .message {
-  margin-bottom: 8px;
+  margin-bottom: 2px;
   width: fit-content;
   max-width: 70%;
-  padding: 8px 12px;
-  border-radius: 18px;
   position: relative;
+  padding: 4px 8px;
+}
+
+.messageContent {
+  padding: 8px 12px;
+  border-radius: 12px;
   font-size: 0.95rem;
   line-height: 1.4;
+  word-break: break-word;
 }
 
 .myMessage {
   margin-left: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.otherMessage {
+  margin-right: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.myMessage .messageContent {
   background: #0b84ff;
   color: white;
   border-bottom-right-radius: 4px;
 }
 
-.otherMessage {
-  margin-right: auto;
+.otherMessage .messageContent {
   background: #2c2c2e;
   color: white;
   border-bottom-left-radius: 4px;
@@ -95,24 +151,23 @@
 .messageHeader {
   display: flex;
   justify-content: space-between;
-  font-size: 0.75rem;
+  align-items: baseline;
   margin-bottom: 2px;
-  padding: 0 2px;
+  padding: 0 4px;
+  width: 100%;
 }
 
 .senderName {
   font-weight: 500;
   color: #86868b;
+  font-size: 0.85rem;
+  margin-bottom: 2px;
 }
 
 .timestamp {
   color: #86868b;
   font-size: 0.7rem;
   margin-left: 8px;
-}
-
-.messageContent {
-  word-break: break-word;
 }
 
 .chatInput {
@@ -171,28 +226,27 @@
 
 .infoHeader {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 24px;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
 }
 
 .infoHeader h3 {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: white;
+  font-size: 1.2rem;
   margin: 0;
-  margin-bottom: 4px;
 }
 
 .joinButton {
   background: #0b84ff;
   color: white;
   border: none;
-  padding: 8px 20px;
-  border-radius: 16px;
+  padding: 8px 0;
+  text-align: center;
+  border-radius: 8px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
+  width: 100%;
 }
 
 .joinButton:hover {
@@ -204,11 +258,13 @@
   background: #ff453a;
   color: white;
   border: none;
-  padding: 8px 20px;
-  border-radius: 16px;
+  padding: 8px 0;
+  text-align: center;
+  border-radius: 8px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
+  width: 100%;
 }
 
 .leaveButton:hover {
@@ -223,9 +279,8 @@
 }
 
 .datetime {
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   color: #86868b;
-  font-weight: 500;
 }
 
 .connectionStatus {
@@ -236,9 +291,10 @@
   color: #86868b;
 }
 
-.loading, .noMessages {
+.loading,
+.noMessages {
   text-align: center;
   padding: 20px;
   color: #86868b;
   font-size: 0.9rem;
-} 
+}

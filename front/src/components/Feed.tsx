@@ -3,7 +3,7 @@ import styles from "./feed.module.css";
 import Session from "./Session";
 import SessionSidebar from "./SessionSidebar";
 import { API_BASE_URL } from "../config";
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from "../contexts/AuthContext";
 import SessionForm from "./SessionForm";
 
 interface FeedProps {
@@ -33,7 +33,7 @@ interface SessionData {
   datetime: string;
   max_participants: number;
   sport_id: number;
-  participants?: Array<{
+  participants: Array<{
     id: number;
     username: string;
   }>;
@@ -58,11 +58,22 @@ const Feed = ({ selectedSport }: FeedProps) => {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [allSessions, setAllSessions] = useState<SessionData[]>([]);
   const [filteredSessions, setFilteredSessions] = useState<SessionData[]>([]);
-  const [selectedSession, setSelectedSession] = useState<SessionData | null>(null);
+  const [selectedSession, setSelectedSession] = useState<SessionData | null>(
+    null
+  );
   const [isCreating, setIsCreating] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [showHistorical, setShowHistorical] = useState<boolean>(false);
+
+  const isHistoricalSession = (session: SessionData) => {
+    const sessionDate = new Date(session.datetime);
+    sessionDate.setHours(0, 0, 0, 0); // Reset time to start of day
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Reset time to start of day
+    return sessionDate < today;
+  };
 
   // Fetch user data from our backend
   useEffect(() => {
@@ -70,8 +81,10 @@ const Feed = ({ selectedSport }: FeedProps) => {
       if (!user?.id) return;
 
       try {
-        const response = await fetch(`${API_BASE_URL}/users/supabase/${user.id}`);
-        if (!response.ok) throw new Error('Failed to fetch user data');
+        const response = await fetch(
+          `${API_BASE_URL}/users/supabase/${user.id}`
+        );
+        if (!response.ok) throw new Error("Failed to fetch user data");
         const data = await response.json();
         setUserData(data);
       } catch (err) {
@@ -88,11 +101,15 @@ const Feed = ({ selectedSport }: FeedProps) => {
       const participantsResponse = await fetch(
         `${API_BASE_URL}/sessions/${sessionId}/participants`
       );
-      if (!participantsResponse.ok) throw new Error('Failed to fetch participants');
+      if (!participantsResponse.ok)
+        throw new Error("Failed to fetch participants");
       const participants = await participantsResponse.json();
       return participants as Array<{ id: number; username: string }>;
     } catch (error) {
-      console.error(`Error fetching participants for session ${sessionId}:`, error);
+      console.error(
+        `Error fetching participants for session ${sessionId}:`,
+        error
+      );
       return [];
     }
   };
@@ -101,7 +118,7 @@ const Feed = ({ selectedSport }: FeedProps) => {
     setLoading(true);
     try {
       const response = await fetch(`${API_BASE_URL}/sessions/`);
-      if (!response.ok) throw new Error('Failed to fetch sessions');
+      if (!response.ok) throw new Error("Failed to fetch sessions");
       const sessions = (await response.json()) as SessionData[];
 
       // Fetch participants for each session
@@ -120,7 +137,7 @@ const Feed = ({ selectedSport }: FeedProps) => {
       // Update selected session if it exists
       if (selectedSession) {
         const updatedSelectedSession = sessionsWithParticipants.find(
-          session => session.id === selectedSession.id
+          (session) => session.id === selectedSession.id
         );
         if (updatedSelectedSession) {
           setSelectedSession(updatedSelectedSession);
@@ -135,13 +152,42 @@ const Feed = ({ selectedSport }: FeedProps) => {
   };
 
   useEffect(() => {
-    if (selectedSport === 'All Upcoming') {
-      setFilteredSessions(allSessions);
+    let filtered = allSessions;
+
+    // First filter by date
+    if (showHistorical) {
+      filtered = filtered
+        .filter((session) => isHistoricalSession(session))
+        .sort(
+          (a, b) =>
+            new Date(b.datetime).getTime() - new Date(a.datetime).getTime()
+        ); // Sort descending for past sessions
     } else {
-      const filtered = allSessions.filter(session => session.sport.name === selectedSport);
-      setFilteredSessions(filtered);
+      filtered = filtered
+        .filter((session) => !isHistoricalSession(session))
+        .sort(
+          (a, b) =>
+            new Date(a.datetime).getTime() - new Date(b.datetime).getTime()
+        ); // Keep ascending for upcoming
     }
-  }, [selectedSport, allSessions]);
+
+    if (selectedSport === "All Upcoming") {
+      setFilteredSessions(filtered);
+    } else if (selectedSport === "My Sessions") {
+      console.log("User ID:", userData?.id);
+      console.log("Filtered sessions:", filtered);
+      const myFiltered = filtered.filter((session) =>
+        session.participants?.includes(userData?.id)
+      );
+      console.log("My filtered sessions:", myFiltered);
+      setFilteredSessions(myFiltered);
+    } else {
+      const sportFiltered = filtered.filter(
+        (session) => session.sport.name === selectedSport
+      );
+      setFilteredSessions(sportFiltered);
+    }
+  }, [selectedSport, allSessions, userData?.id, showHistorical]);
 
   useEffect(() => {
     fetchSessions();
@@ -158,7 +204,7 @@ const Feed = ({ selectedSport }: FeedProps) => {
 
   const handleSessionCreated = async (sessionData: any) => {
     setIsCreating(false);
-    setSuccessMessage('Session created successfully!');
+    setSuccessMessage("Session created successfully!");
     await fetchSessions();
     setSelectedSession(sessionData);
 
@@ -167,9 +213,14 @@ const Feed = ({ selectedSport }: FeedProps) => {
     }, 3000);
   };
 
-  const handleParticipantUpdate = async (sessionId: number, isJoining: boolean) => {
-    setAllSessions(prevSessions =>
-      prevSessions.map(session => {
+  const handleParticipantUpdate = async (
+    sessionId: number,
+    isJoining: boolean
+  ) => {
+    if (!userData) return;
+
+    setAllSessions((prevSessions) =>
+      prevSessions.map((session) => {
         if (session.id === sessionId) {
           return {
             ...session,
@@ -177,10 +228,8 @@ const Feed = ({ selectedSport }: FeedProps) => {
               ? session.current_participants + 1
               : session.current_participants - 1,
             participants: isJoining
-              ? [...(session.participants || []), { id: userData!.id, username: userData!.username }]
-              : (session.participants || []).filter(
-                  participant => participant.id !== userData!.id
-                ),
+              ? [...(session.participants || []), userData.id]
+              : (session.participants || []).filter((id) => id !== userData.id),
           };
         }
         return session;
@@ -200,67 +249,54 @@ const Feed = ({ selectedSport }: FeedProps) => {
     return <div className={styles.error}>{error}</div>;
   }
 
-  // Check if there are no sessions and ensure the button is still visible
-if (filteredSessions.length === 0) {
+
+
   return (
     <div className={styles.feed}>
       <div className={styles.sessionsPanel}>
         <div className={styles.feedHeader}>
-          <h2 className={styles.feedTitle}>No Available Sessions</h2>
+          <div className={styles.titleSection}>
+            <h2 className={styles.feedTitle}>
+              {selectedSport === "My Sessions" ? "My " : ""}
+              {showHistorical ? "Past" : "Upcoming"} Sessions
+            </h2>
+          </div>
           <button
             className={styles.newSessionButton}
             onClick={() => setIsCreating(true)}
           >
             + New Session
           </button>
-        </div>
-      </div>
-
-      {isCreating ? (
-        <SessionForm
-          onClose={() => setIsCreating(false)}
-          onSubmit={handleSessionCreated}
-          userData={userData}
-        />
-      ) : (
-        <div className={styles.noSessionsMessage}>
-          No sessions available. You can create one!
-        </div>
-      )}
-    </div>
-  );
-}
-
-
-  return (
-    <div className={styles.feed}>
-      <div className={styles.sessionsPanel}>
-        <div className={styles.feedHeader}>
-          <h2 className={styles.feedTitle}>Available Sessions</h2>
           <button
-            className={styles.newSessionButton}
-            onClick={() => setIsCreating(true)}
+            className={styles.toggleButton}
+            onClick={() => setShowHistorical(!showHistorical)}
           >
-            + New Session
+            Show {showHistorical ? "Upcoming" : "Past"} Sessions
           </button>
         </div>
         {successMessage && (
-          <div className={styles.successMessage}>
-            {successMessage}
-          </div>
+          <div className={styles.successMessage}>{successMessage}</div>
         )}
         <div className={styles.feedGrid}>
-          {filteredSessions.map((session) => (
-            <div
-              key={session.id}
-              className={`${styles.sessionCard} ${
-                selectedSession?.id === session.id ? styles.active : ""
-              }`}
-              onClick={() => handleSessionClick(session)}
-            >
-              <Session {...session} />
+          {filteredSessions.length === 0 ? (
+            <div className={styles.noSessions}>
+              {selectedSport === "My Sessions" 
+                ? `You have no ${showHistorical ? 'past' : 'upcoming'} sessions`
+                : `No ${showHistorical ? 'past' : 'upcoming'} ${selectedSport === "All Upcoming" ? '' : selectedSport} sessions available`}
             </div>
-          ))}
+          ) : (
+            filteredSessions.map((session) => (
+              <div
+                key={session.id}
+                className={`${styles.sessionCard} ${
+                  selectedSession?.id === session.id ? styles.active : ""
+                }`}
+                onClick={() => handleSessionClick(session)}
+              >
+                <Session {...session} />
+              </div>
+            ))
+          )}
         </div>
       </div>
 
@@ -276,7 +312,9 @@ if (filteredSessions.length === 0) {
             selectedSession={selectedSession}
             onClose={handleCloseSidebar}
             currentUser={userData}
-            onParticipantUpdate={(isJoining) => handleParticipantUpdate(selectedSession.id, isJoining)}
+            onParticipantUpdate={(isJoining) =>
+              handleParticipantUpdate(selectedSession.id, isJoining)
+            }
           />
         )
       )}

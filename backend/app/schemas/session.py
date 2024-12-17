@@ -6,9 +6,14 @@ class UserBasic(BaseModel):
     id: int
     username: str
     email: str
+    full_name: str = ""
 
     class Config:
         from_attributes = True
+
+    @property
+    def display_name(self) -> str:
+        return self.full_name or self.username
 
 class SportBasic(BaseModel):
     id: int

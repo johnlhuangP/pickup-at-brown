@@ -7,7 +7,7 @@ interface SessionProps {
   title: string;
   description?: string;
   datetime: string;
-  creator: { id: number; username: string } | null;
+  creator: { id: number; username: string; full_name?: string } | null;
   sport: { id: number; name: string };
   location: { id: number; name: string };
   max_participants: number;
@@ -60,7 +60,7 @@ const Session: React.FC<SessionProps> = ({
         </div>
         <div className={styles.detail}>
           <FiUser className={styles.icon} />
-          <span>{creator?.username || 'Unknown'}</span>
+          <span>{creator?.full_name || creator?.username || 'Unknown'}</span>
         </div>
       </div>
     </div>

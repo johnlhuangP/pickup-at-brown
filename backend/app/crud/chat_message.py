@@ -40,13 +40,13 @@ def get_session_messages(db, session_id: int, skip: int = 0, limit: int = 50):
         .limit(limit)\
         .all()
     
-    # Transform messages to include sender_username
+    # Transform messages to include sender's full name
     return [{
         "id": msg.id,
         "content": msg.content,
         "session_id": msg.session_id,
         "sender_id": msg.sender_id,
-        "sender_username": msg.sender.username,
+        "sender_username": msg.sender.full_name or msg.sender.username,  # Fall back to username if no full name
         "timestamp": msg.timestamp
     } for msg in messages]
 

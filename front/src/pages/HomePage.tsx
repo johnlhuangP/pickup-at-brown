@@ -4,7 +4,7 @@ import Feed from "../components/Feed"; // Import Feed component
 import styles from './homepage.module.css'; // Import the new CSS module
 
 const HomePage = () => {
-  const [selectedSport, setSelectedSport] = useState<string>(""); // State for selected sport
+  const [selectedSport, setSelectedSport] = useState<string>("My Sessions"); // State for selected sport
 
   // Handler to update the selected sport
   const handleSportSelect = (sport: string) => {
