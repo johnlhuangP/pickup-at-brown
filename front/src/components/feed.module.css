@@ -2,9 +2,9 @@
 .feed {
     display: flex;
     height: calc(100vh - 64px); /* Adjust based on your header height */
-    overflow: hidden;
+    overflow: auto;
     padding-left: 20px; /* Add padding on the left */
-
+    background-color: #e2e8f0;
 }
 
 .sessionsPanel {
@@ -108,4 +108,16 @@
     transform: translateY(0);
   }
 }
+  
+
+.noSessionsMessage {
+    display: flex;
+    justify-content: center; /* Horizontally center */
+    align-items: center; /* Vertically center */
+    height: 100vh; /* Full viewport height */
+    text-align: center; /* Ensure text is centered */
+    font-size: 1.5rem; /* Adjust font size as needed */
+    color: #555; /* Adjust color */
+    background-color: #f8f8f8; /* Optional: add a light background color */
+  }
   

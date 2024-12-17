@@ -8,7 +8,7 @@
   background-color: #333;
   color: white;
   padding-top: 0px;
-  padding-left: 20px; /* Add padding on the left to push the content away from the edge */
+  padding-left: 0px; /* Add padding on the left to push the content away from the edge */
   box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
   overflow-y: auto; /* Always show the vertical scrollbar */
   z-index: 9999; /* Ensure sidebar is below the header but above other content */
@@ -27,6 +27,7 @@
 }
 
 .sidebarBrand {
+  margin-left: 10px;
   margin-top: 10px;
   font-size: 1.2rem;
   font-weight: bold;
@@ -43,36 +44,45 @@
 }
 
 .sidebarNav ul {
-  list-style: none;
+  list-style: none; /* Remove bullets from the list */
   padding: 0;
-  margin: 0;
+  margin: 0px;
   width: 100%; /* Ensure full width for alignment */
 }
 
 /* Navigation list item */
 .sidebarNav li {
-  padding: 10px 0;
+  padding: 0px 0;
   width: 100%; /* Ensure the list items take full width */
 }
 
 /* Sidebar navigation links */
 .sidebarNav li a {
-  color: white;
+  color: white; /* Default font color */
   text-decoration: none;
   font-size: 1.1rem;
   display: block;
   padding: 10px 20px; /* Add padding for left/right spacing */
   transition: background-color 0.2s ease;
   text-align: left; /* Align the text to the left */
-  margin-left: 0px; /* Ensure margin between the text and the sidebar's edge */
+  margin: 10px; /* Ensure margin between the text and the sidebar's edge */
 }
 
 /* Highlight selected sport */
 .selectedSport {
-  background-color: #8fe3ff; /* Light Blue */
-  color: black;
-  border-radius: 8px;
+  background-color: #870065; /* Light Blue */
+  color: black; /* Black color for selected sport */
+  border-radius: 15px;
   font-weight: bold;
+  
+}
+
+/* Sidebar link hover effect */
+.sidebarNav li a:hover {
+  border-radius: 15px;
+
+  background-color: rgb(0, 38, 255); /* Red background on hover */
+  color: white; /* Ensure text stays white when hovered */
 }
 
 /* Optional: Remove sidebar hiding on smaller screens */
