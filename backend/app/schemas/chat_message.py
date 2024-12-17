@@ -13,7 +13,6 @@ class ChatMessageResponse(ChatMessageBase):
     id: int
     sender_id: int
     timestamp: datetime
-    sender_username: str
 
     class Config:
         from_attributes = True 
