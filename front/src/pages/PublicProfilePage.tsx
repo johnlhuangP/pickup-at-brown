@@ -53,7 +53,7 @@ const PublicProfilePage: React.FC<PublicProfilePageProps> = ({
   }
 
   return (
-    <div className="container bootstrap snippets bootdeys">
+    <div className="container  ">
       <div className="row" id="user-profile">
         <div className="col-lg-3 col-md-4 col-sm-4">
           <div className="main-box clearfix">
