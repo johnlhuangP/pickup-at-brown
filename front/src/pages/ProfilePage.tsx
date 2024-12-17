@@ -7,6 +7,7 @@ import PastSessions from "../components/PastSessions";
 import Friends from "../components/Friends";
 import RecommendedFriends from "../components/RecommendedFriends";
 import { API_BASE_URL } from "../config";
+import { useNavigate } from "react-router-dom";
 
 interface SportPreference {
   sport_name: string;
@@ -15,6 +16,7 @@ interface SportPreference {
 }
 
 const UserProfileCard: React.FC = () => {
+  const navigate = useNavigate();
   const { user } = useAuth();
   const [userData, setUserData] = useState<any>(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -148,7 +150,8 @@ const UserProfileCard: React.FC = () => {
   };
 
   if (!user || !userData) {
-    return <div className="loading">Loading profile...</div>;
+    // navigate("/register");
+    return <div className="loading">Redirecting you to profile creation!</div>;
   }
 
   return (

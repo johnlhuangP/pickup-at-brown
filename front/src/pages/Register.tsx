@@ -136,7 +136,7 @@ function Register() {
   };
 
   return (
-    <div className="container d-flex justify-content-center align-items-center">
+    <div className="container d-flex justify-content-center">
       <div className="card p-4 shadow-sm" style={{ maxWidth: "400px", width: "100%" }}>
         <h3 className="text-center mb-4">Complete Your Profile</h3>
         {formError && (
