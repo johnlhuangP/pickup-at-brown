@@ -8,13 +8,13 @@
 }
 
 .sessionInfo {
-  padding: 24px;
+  padding: 10px;
   border-bottom: 1px solid #2c2c2e;
   background: #2c2c2e;
 }
 
 .sessionInfo h3 {
-  font-size: 1.5rem;
+  font-size: 1rem;
   font-weight: 600;
   color: white;
   margin-bottom: 20px;

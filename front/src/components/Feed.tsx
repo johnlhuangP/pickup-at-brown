@@ -200,9 +200,37 @@ const Feed = ({ selectedSport }: FeedProps) => {
     return <div className={styles.error}>{error}</div>;
   }
 
-  if (filteredSessions.length === 0) {
-    return <div>No sessions available for {selectedSport}</div>;
-  }
+  // Check if there are no sessions and ensure the button is still visible
+if (filteredSessions.length === 0) {
+  return (
+    <div className={styles.feed}>
+      <div className={styles.sessionsPanel}>
+        <div className={styles.feedHeader}>
+          <h2 className={styles.feedTitle}>No Available Sessions</h2>
+          <button
+            className={styles.newSessionButton}
+            onClick={() => setIsCreating(true)}
+          >
+            + New Session
+          </button>
+        </div>
+      </div>
+
+      {isCreating ? (
+        <SessionForm
+          onClose={() => setIsCreating(false)}
+          onSubmit={handleSessionCreated}
+          userData={userData}
+        />
+      ) : (
+        <div className={styles.noSessionsMessage}>
+          No sessions available. You can create one!
+        </div>
+      )}
+    </div>
+  );
+}
+
 
   return (
     <div className={styles.feed}>
