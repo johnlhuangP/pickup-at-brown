@@ -7,7 +7,7 @@ import UserSessions from "../components/UserSessions";
 import Friends from "../components/Friends";
 import RecommendedFriends from "../components/RecommendedFriends";
 import { API_BASE_URL } from "../config";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import FriendRequests from '../components/FriendRequests';
 
 interface SportPreference {
@@ -17,7 +17,7 @@ interface SportPreference {
 }
 
 const UserProfileCard: React.FC = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const { user } = useAuth();
   const [userData, setUserData] = useState<any>(null);
   const [isEditing, setIsEditing] = useState(false);
