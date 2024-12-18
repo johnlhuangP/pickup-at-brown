@@ -1,0 +1,108 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+}
+
+.recommendationCard {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.userInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.userName {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #2d3748;
+  text-decoration: none;
+}
+
+.userName:hover {
+  color: #4299e1;
+}
+
+.username {
+  font-size: 0.9rem;
+  color: #718096;
+}
+
+.matchingInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sports {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sports h4 {
+  font-size: 0.9rem;
+  color: #4a5568;
+  margin: 0;
+}
+
+.sportsList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.sport {
+  background: #ebf8ff;
+  color: #2b6cb0;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+
+.sessions {
+  font-size: 0.9rem;
+  color: #718096;
+}
+
+.addButton {
+  background: #4299e1;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  align-self: flex-start;
+}
+
+.addButton:hover {
+  background: #3182ce;
+  transform: translateY(-1px);
+}
+
+.loading, .error, .empty {
+  text-align: center;
+  padding: 40px;
+  color: #718096;
+  font-size: 1.1rem;
+}
+
+.error {
+  color: #e53e3e;
+}
+
+.empty {
+  color: #718096;
+  font-style: italic;
+} 

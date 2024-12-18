@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./profilepage.css";
 import blankProfile from "../assets/empty_profile.png";
-import PastSessions from "../components/PastSessions";
+import UserSessions from "../components/UserSessions";
 import Friends from "../components/Friends";
 import { API_BASE_URL } from "../config";
 
