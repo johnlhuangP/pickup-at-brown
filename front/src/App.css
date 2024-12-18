@@ -7,3 +7,12 @@
 #root {
   padding-top: 5.5rem;
 }
+
+
+/* Disable scrolling globally for the entire page */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;  /* Ensure the page takes up full viewport */
+  /* overflow: hidden;  Disable scrolling for the entire page */
+}
