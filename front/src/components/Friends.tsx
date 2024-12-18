@@ -1,19 +1,12 @@
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { API_BASE_URL } from '../config';
+import styles from './friends.module.css';
 
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import pfp_img from "../assets/solid_color.png";
-
-interface friendData {
+interface FriendData {
   user_id: number;
   friend_id: number;
   friendship_id: number;
-  user: {
-    id: number;
-    username: string;
-    email: string;
-    first_name: string;
-    last_name: string;
-  };
   friend: {
     id: number;
     username: string;
@@ -28,108 +21,81 @@ interface FriendsProps {
   user_id: number;
 }
 
-const Friends = ({ user_id }: FriendsProps) => {
-  const [friends, setFriends] = useState<friendData[]>([]);
-  const navigate = useNavigate();
-  const url = `http://127.0.0.1:8000/friendships/?user_id=${user_id}&status=accepted&skip=0&limit=100`;
+const Friends: React.FC<FriendsProps> = ({ user_id }) => {
+  const [friends, setFriends] = useState<FriendData[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch(url)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Failed to fetch friends");
-        }
-        return response.json();
-      })
-      .then((data) => {
+    const fetchFriends = async () => {
+      try {
+        const response = await fetch(
+          `${API_BASE_URL}/friendships/?user_id=${user_id}&status=accepted&skip=0&limit=100`
+        );
+        if (!response.ok) throw new Error('Failed to fetch friends');
+        const data = await response.json();
         setFriends(data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, [user_id]);
+      } catch (err) {
+        console.error('Error fetching friends:', err);
+        setError('Failed to load friends');
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const handleFriendClick = (friendUserId: number) => {
-    navigate(`/public-profile/${friendUserId}`);
-  };
+    fetchFriends();
+  }, [user_id]);
 
   const handleRemoveFriend = async (friendUserId: number) => {
     try {
-      const deleteUrl = `http://127.0.0.1:8000/friendships/${friendUserId}?user_id=${user_id}`;
-      const response = await fetch(deleteUrl, {
-        method: "DELETE",
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to remove friend");
-      }
-
-      // Optionally, handle success message from server
-      // const result = await response.json();
-      // console.log(result.message);
-
-      // Remove this friend from local state
-      setFriends((prevFriends) =>
-        prevFriends.filter((f) => f.friend.id !== friendUserId)
+      const response = await fetch(
+        `${API_BASE_URL}/friendships/${friendUserId}?user_id=${user_id}`,
+        {
+          method: 'DELETE',
+        }
       );
-    } catch (error) {
-      console.error("Error removing friend:", error);
+
+      if (!response.ok) throw new Error('Failed to remove friend');
+      
+      // Remove this friend from local state
+      setFriends(prevFriends => 
+        prevFriends.filter(f => f.friend.id !== friendUserId)
+      );
+    } catch (err) {
+      console.error('Error removing friend:', err);
+      setError('Failed to remove friend');
     }
   };
 
-  if (friends.length === 0) {
-    return (
-      <div>
-        <h3>No friends at the moment.</h3>
-      </div>
-    );
-  }
+  if (loading) return <div className={styles.loading}>Loading friends...</div>;
+  if (error) return <div className={styles.error}>{error}</div>;
+  if (friends.length === 0) return <div className={styles.empty}>No friends yet</div>;
 
   return (
-    <>
-      {friends.map((friend_entry) => {
-        const friendUserId = friend_entry.friend.id;
-
-        return (
-          <div className="row mt-4" key={friend_entry.friendship_id}>
-            <div className="col-sm-6 col-lg-4">
-              <div
-                className="card hover-img"
-                style={{ cursor: "pointer" }}
-                onClick={() => handleFriendClick(friendUserId)}
+    <div className={styles.container}>
+      <h3 className={styles.title}>Friends</h3>
+      <div className={styles.friendsList}>
+        {friends.map((friend) => (
+          <div key={friend.friendship_id} className={styles.friendCard}>
+            <div className={styles.userInfo}>
+              <Link to={`/public-profile/${friend.friend.id}`} className={styles.userName}>
+                {friend.friend.first_name} {friend.friend.last_name}
+              </Link>
+              <span className={styles.username}>@{friend.friend.username}</span>
+            </div>
+            
+            <div className={styles.actions}>
+              <button
+                onClick={() => handleRemoveFriend(friend.friend.id)}
+                className={styles.removeButton}
               >
-                <div className="card-body p-4 text-center border-bottom">
-                  <img
-                    src={pfp_img}
-                    alt="blank profile picture"
-                    className="rounded-circle mb-3"
-                    width={80}
-                    height={80}
-                  />
-                  <h5 className="fw-semibold mb-0">
-                    {friend_entry.friend.first_name}{" "}
-                    {friend_entry.friend.last_name}
-                  </h5>
-                  <p>{friend_entry.friend.username}</p>
-                </div>
-
-                <div className="card-footer text-center">
-                  <button
-                    className="btn btn-danger"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleRemoveFriend(friendUserId);
-                    }}
-                  >
-                    Remove Friend
-                  </button>
-                </div>
-              </div>
+                Remove Friend
+              </button>
             </div>
           </div>
-        );
-      })}
-    </>
+        ))}
+      </div>
+    </div>
   );
 };
 

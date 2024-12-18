@@ -1,0 +1,112 @@
+.pastSessions {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+}
+
+.sessionCard {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+  border-left: 4px solid #CBD5E0;
+}
+
+.sessionCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.upcomingSession {
+  border-left-color: #4299E1;
+}
+
+.title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 12px;
+}
+
+.badges {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.sportBadge {
+  display: inline-block;
+  background: #EBF8FF;
+  color: #2B6CB0;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.statusBadge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.statusBadge.upcoming {
+  background: #C6F6D5;
+  color: #2F855A;
+}
+
+.statusBadge.past {
+  background: #FED7D7;
+  color: #C53030;
+}
+
+.details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.detail {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.label {
+  color: #718096;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.value {
+  color: #2d3748;
+  font-weight: 500;
+}
+
+.loading {
+  text-align: center;
+  padding: 40px;
+  color: #718096;
+  font-size: 1rem;
+}
+
+.error {
+  text-align: center;
+  padding: 20px;
+  color: #E53E3E;
+  background: #FFF5F5;
+  border-radius: 8px;
+  margin: 20px;
+}
+
+.empty {
+  text-align: center;
+  padding: 40px;
+  color: #718096;
+  font-style: italic;
+} 

@@ -3,11 +3,12 @@ import { useEffect, useState } from "react";
 import "./profilepage.css";
 import blankProfile from "../assets/empty_profile.png";
 import { useAuth } from "../contexts/AuthContext";
-import PastSessions from "../components/PastSessions";
+import UserSessions from "../components/UserSessions";
 import Friends from "../components/Friends";
 import RecommendedFriends from "../components/RecommendedFriends";
 import { API_BASE_URL } from "../config";
 import { useNavigate } from "react-router-dom";
+import FriendRequests from '../components/FriendRequests';
 
 interface SportPreference {
   sport_name: string;
@@ -283,7 +284,7 @@ const UserProfileCard: React.FC = () => {
                     href="#tab-activity"
                     onClick={() => setActiveTab("tab-activity")}
                   >
-                    Past Sessions
+                    Sessions
                   </a>
                 </li>
                 <li className={activeTab === "tab-friends" ? "active" : ""}>
@@ -292,6 +293,14 @@ const UserProfileCard: React.FC = () => {
                     onClick={() => setActiveTab("tab-friends")}
                   >
                     Friends
+                  </a>
+                </li>
+                <li className={activeTab === "tab-requests" ? "active" : ""}>
+                  <a
+                    href="#tab-requests"
+                    onClick={() => setActiveTab("tab-requests")}
+                  >
+                    Friend Requests
                   </a>
                 </li>
                 <li className={activeTab === "tab-recommended" ? "active" : ""}>
@@ -306,10 +315,18 @@ const UserProfileCard: React.FC = () => {
 
               <div className="tab-content">
                 {activeTab === "tab-activity" && (
-                  <PastSessions creator_id={userData.id} />
+                  <UserSessions creator_id={userData.id} />
                 )}
                 {activeTab === "tab-friends" && (
                   <Friends user_id={userData.id} />
+                )}
+                {activeTab === "tab-requests" && (
+                  <FriendRequests 
+                    userId={userData.id}
+                    onRequestHandled={() => {
+                      // Optionally refresh friends list or other data
+                    }}
+                  />
                 )}
                 {activeTab === "tab-recommended" && <RecommendedFriends />}
               </div>

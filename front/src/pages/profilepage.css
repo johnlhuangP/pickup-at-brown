@@ -1,11 +1,13 @@
 /* Profile Image Styling */
 .img-radius {
     border-radius: 50%;
-    width: 100px;
-    height: 100px;
+    width: 120px;
+    height: 120px;
     object-fit: cover;
     border: 3px solid #fff;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin: 0 auto 20px;
+    display: block;
   }
   
   /* General Layout */
@@ -15,15 +17,15 @@
     max-width: 1200px;
     overflow: auto;
     /* border: 2px solid #ccc; Add a border (2px solid grey) around the container */
-
+    padding-top: 30px;
   }
   
   /* User Profile Box Styling */
   #user-profile .main-box {
     background: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 24px;
     margin-bottom: 20px;
     overflow-y: auto; /* Allow vertical scrolling */
     max-height: calc(0.8 * (100vh - 60px));
@@ -38,15 +40,23 @@
   }
   
   .profile-label {
-    margin: 10px 0;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .profile-details {
+    padding: 20px 0;
   }
   
   .profile-details h6 {
-    margin-bottom: 10px;
+    color: #2d3748;
+    font-weight: 600;
+    margin-bottom: 8px;
   }
   
   .profile-details p {
-    color: #555;
+    color: #718096;
+    margin-bottom: 20px;
   }
   
   /* Tabs and Navigation Styling */
@@ -55,17 +65,36 @@
   }
   
   .nav-tabs {
-    border-bottom: 2px solid #ddd;
-    gap: 2rem;
+    display: flex;
+    gap: 8px;
+    border-bottom: 2px solid #e2e8f0;
+    padding: 0;
+    margin-bottom: 24px;
+    list-style: none;
   }
   
-  .nav-tabs a {
-    font-size: 24px;
+  .nav-tabs li {
+    margin-bottom: -2px;
   }
   
-  .nav-tabs .active a {
-    color: #007bff;
-    font-weight: bold;
+  .nav-tabs li a {
+    display: inline-block;
+    padding: 12px 20px;
+    color: #718096;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 1rem;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s ease;
+  }
+  
+  .nav-tabs li:hover a {
+    color: #4299e1;
+  }
+  
+  .nav-tabs li.active a {
+    color: #4299e1;
+    border-bottom: 2px solid #4299e1;
   }
   
   /* Error Message */
@@ -86,19 +115,50 @@
   }
   
   /* Sports Preferences Styling */
-  .sports-list .sport-item {
-    font-size: 16px;
-    margin-bottom: 5px;
+  .sports-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
   }
   
-  .sports-list .skill-level {
-    color: #777;
-    font-size: 14px;
+  .sport-item {
+    background: #f7fafc;
+    padding: 8px 12px;
+    border-radius: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .sport-item .skill-level {
+    color: #718096;
+    font-size: 0.9rem;
+  }
+  
+  .sports-preferences-edit {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .sport-preference-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #f7fafc;
+    padding: 8px 12px;
+    border-radius: 6px;
+  }
+  
+  .profile-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
   }
   
   /* General Tab Content Styling */
   .tab-content {
-    margin-top: 20px;
+    padding: 20px 0;
   }
   
   /* Tab Box Styling */

@@ -1,0 +1,85 @@
+.container {
+  padding: 20px;
+}
+
+.title {
+  font-size: 1.2rem;
+  color: #2d3748;
+  margin-bottom: 16px;
+  font-weight: 600;
+}
+
+.friendsList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.friendCard {
+  background: white;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.userInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.userName {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #2d3748;
+  text-decoration: none;
+}
+
+.userName:hover {
+  color: #4299e1;
+}
+
+.username {
+  font-size: 0.9rem;
+  color: #718096;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.removeButton {
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: white;
+  color: #e53e3e;
+  border: 1px solid #e53e3e;
+}
+
+.removeButton:hover {
+  background: #fff5f5;
+  transform: translateY(-1px);
+}
+
+.loading, .error, .empty {
+  text-align: center;
+  padding: 20px;
+  color: #718096;
+  font-size: 1rem;
+}
+
+.error {
+  color: #e53e3e;
+}
+
+.empty {
+  color: #718096;
+  font-style: italic;
+} 

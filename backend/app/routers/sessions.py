@@ -6,6 +6,10 @@ from app.schemas.session import SessionCreate, SessionResponse, SessionUpdate
 from typing import List
 from app.core.auth_router import AuthRouter
 from fastapi import HTTPException
+from sqlalchemy.orm import joinedload
+from sqlalchemy import or_
+from app.models.session import Session as SessionModel
+from app.models.session_participant import SessionParticipant
 
 router = AuthRouter(
     prefix="/sessions",
@@ -82,3 +86,54 @@ def leave_session(session_id: int, user_id: int, db: Session = Depends(get_db)):
 def get_session_history(creator_id: int, db: Session = Depends(get_db)):
     sessions = session_crud.get_session_history(db, creator_id=creator_id)
     return sessions
+
+@router.get("/user/{user_id}/all")
+async def get_all_user_sessions(
+    user_id: int,
+    db: Session = Depends(get_db)
+):
+    """Get all sessions (both past and upcoming) where the user is a participant"""
+    
+    # Get all sessions where the user is either a creator or participant
+    sessions = (
+        db.query(SessionModel)
+        .join(SessionParticipant, SessionModel.id == SessionParticipant.session_id)
+        .filter(
+            or_(
+                SessionModel.creator_id == user_id,
+                SessionParticipant.user_id == user_id
+            )
+        )
+        .options(
+            joinedload(SessionModel.sport),
+            joinedload(SessionModel.location),
+            joinedload(SessionModel.creator)
+        )
+        .distinct()
+        .all()
+    )
+    
+    # Format the response
+    formatted_sessions = []
+    for session in sessions:
+        formatted_sessions.append({
+            "id": session.id,
+            "title": session.title,
+            "description": session.description,
+            "datetime": session.datetime,
+            "sport": {
+                "id": session.sport.id,
+                "name": session.sport.name
+            },
+            "location": {
+                "id": session.location.id,
+                "name": session.location.name
+            },
+            "creator": {
+                "id": session.creator.id,
+                "username": session.creator.username,
+                "full_name": f"{session.creator.first_name} {session.creator.last_name}"
+            }
+        })
+    
+    return formatted_sessions
