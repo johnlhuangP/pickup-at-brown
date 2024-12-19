@@ -1,50 +1,81 @@
-# React + TypeScript + Vite
+# Pickup at Brown - Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React-based frontend application for coordinating pickup sports games at Brown University. Built with TypeScript, Vite, and React.
 
-Currently, two official plugins are available:
+## Project Structure
+front/ ├── src/ # Source code │ ├── api/ # API integration │ ├── assets/ # Static assets │ ├── components/ # Reusable React components │ ├── contexts/ # React contexts (Auth, WebSocket) │ ├── lib/ # Library configurations │ ├── pages/ # Page components │ └── config.ts # Configuration constants ├── e2e/ # End-to-end tests ├── public/ # Public assets └── tests/ # Test files
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Prerequisites
 
-## Expanding the ESLint configuration
+- Node.js (v16 or higher)
+- npm or yarn
+- A running backend server (see backend README)
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Environment Variables
 
-- Configure the top-level `parserOptions` property like this:
+Create a `.env` file in the root directory with:
+VITE_SUPABASE_URL=your_supabase_url VITE_SUPABASE_ANON_KEY=your_supabase_key
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+## Installation
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+```bash
+# Install dependencies
+npm install
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+## Development
+npm run dev
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+The development server will start at http://localhost:5173
+
+## Testing 
+# Run e2e tests
+npm run test:e2e
+
+# Run unit tests
+npm run test
+
+## Technologies Used
+* React 18
+* TypeScript
+* Vite
+* React Router DOM
+* Bootstrap & React Bootstrap
+* Supabase for authentication
+* WebSocket for real-time features
+* Playwright for testing
+
+## Component Architecture
+
+### Contexts
+* `AuthContext`: Manages user authentication state and login/logout flows
+* `WebSocketContext`: Handles real-time communication for chat and game updates
+
+### Core Components
+* `Header`
+  * Navigation bar with auth controls
+  * Sport selection dropdown
+  * User profile menu
+* `Sidebar`
+  * Sport filtering options
+  * Quick navigation links
+  * Active game indicators
+* `Feed`
+  * Displays available game sessions
+  * Sorting and filtering controls
+  * Real-time updates
+
+### Pages
+* Authentication
+  * `SignInPage`: User login form
+  * `SignUpPage`: New user registration
+  * `ResetPasswordPage`: Password recovery
+* Main Features
+  * `HomePage`: Dashboard with active games
+  * `ProfilePage`: User profile management
+  * `GameDetailsPage`: Individual game session view
+  * `CreateGamePage`: Game creation form
+* User Management
+  * `FriendsPage`: Friend list and requests
+  * `SettingsPage`: User preferences
+
+
