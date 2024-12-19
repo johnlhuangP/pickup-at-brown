@@ -2,9 +2,6 @@
 
 A React-based frontend application for coordinating pickup sports games at Brown University. Built with TypeScript, Vite, and React.
 
-## Project Structure
-front/ ├── src/ # Source code │ ├── api/ # API integration │ ├── assets/ # Static assets │ ├── components/ # Reusable React components │ ├── contexts/ # React contexts (Auth, WebSocket) │ ├── lib/ # Library configurations │ ├── pages/ # Page components │ └── config.ts # Configuration constants ├── e2e/ # End-to-end tests ├── public/ # Public assets └── tests/ # Test files
-
 ## Prerequisites
 
 - Node.js (v16 or higher)
