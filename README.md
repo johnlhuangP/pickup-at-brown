@@ -1,14 +1,15 @@
 # Pickup at Brown
 
-A full-stack web application for coordinating pickup sports games at Brown University.
+A full-stack web application for coordinating activities happening at Brown University.
 
 ## Key Features
 
 ### User Management
 - Supabase authentication
 - Profile customization
-- Friend system with recommendations
+- Friend recommendation list
 - Activity history tracking
+- Registration, Sign In/Out
 
 ### Sports Sessions
 - Create & join game sessions
@@ -17,7 +18,7 @@ A full-stack web application for coordinating pickup sports games at Brown Unive
 - Skill level matching
 
 ### Real-time Communication
-- In-game chat rooms
+- Live Chat feature
 - Live notifications
 - Session updates
 - Friend requests
@@ -27,7 +28,7 @@ A full-stack web application for coordinating pickup sports games at Brown Unive
 ### Frontend
 - React 18 + TypeScript
 - Vite
-- React Router DOM
+<!-- - React Router DOM -->
 - Bootstrap
 - WebSocket client
 
@@ -39,13 +40,13 @@ A full-stack web application for coordinating pickup sports games at Brown Unive
 - WebSocket server
 
 
-## Getting Started
+<!-- ## Getting Started
 
 1. Clone repository:
 ```bash
 git clone https://github.com/your-username/pickup-at-brown.git
 cd pickup-at-brown
-```
+``` -->
 
 ## Team
 Colin Pascual, John Huang, Luke Tu, Alex Tran
