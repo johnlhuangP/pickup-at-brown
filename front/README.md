@@ -21,19 +21,20 @@ VITE_SUPABASE_URL=your_supabase_url VITE_SUPABASE_ANON_KEY=your_supabase_key
 ```bash
 # Install dependencies
 npm install
-
+```
 ## Development
 npm run dev
 
 The development server will start at http://localhost:5173
 
-## Testing 
+## Testing
+```bash
 # Run e2e tests
 npm run test:e2e
 
 # Run unit tests
 npm run test
-
+```
 ## Technologies Used
 * React 18
 * TypeScript
