@@ -93,8 +93,8 @@ function SignInPage() {
           </button>
         </form>
         <div className={styles.links}>
-          <a href="/signup" className={styles.link}>Don't have an account? Sign up</a>
-          <a href="/forgot-password" className={styles.link}>Forgot password?</a>
+          <a href="/sign-up" className={styles.link}>Don't have an account? Sign up</a>
+          {/* <a href="/forgot-password" className={styles.link}>Forgot password?</a> */}
         </div>
       </div>
     </div>
